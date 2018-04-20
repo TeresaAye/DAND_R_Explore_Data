@@ -1,0 +1,320 @@
+Project 1st review:
+<https://urldefense.proofpoint.com/v2/url?u=http-3A__bsft.io_x_bt6c8f-3F
+uid-3D26ffb0e4-2D6a84-2D405c-2Dadef-2Dfffbef7bf2da-
+
+
+References for R project
+
+Udacity course - forum
+https://discussions.udacity.com/t/how-to-gather-or-transpose-gapminder/13868
+https://discussions.udacity.com/t/how-to-gather-or-transpose-gapminder/13868/16
+https://s3.amazonaws.com/content.udacity-data.com/courses/ud651/diamondsExample_2016-05.html
+https://discussions.udacity.com/t/scale-x-discrete-and-scale-x-continuous/28166
+https://discussions.udacity.com/t/8-quiz-ratio-plot/256900/2
+https://discussions.udacity.com/search?q=sample%20of%20households%20category%3A920
+https://discussions.udacity.com/t/looking-at-samples-of-households-in/161911
+https://discussions.udacity.com/t/question-from-l5-looking-at-sample-households/23082
+https://discussions.udacity.com/t/function-with-scatterplot/248683/2
+
+External:
+http://stackoverflow.com/questions/18803354/ending-prompt-in-r = use the esc key
+http://stackoverflow.com/questions/13410272/setting-the-default-value-in-a-function = 
+     if(is.null(x))
+     x <- seq(from = 0.05, to = b, by = 0.001)
+https://www.google.ca/?gfe_rd=cr&ei=2cbWWLKXD6eC8QevuIzIDQ#q=what+is+the+function+for+standard+deviation+in+r = sd
+http://www.statisticshowto.com/probability-and-statistics/chi-square/ = info on chi
+https://stackoverflow.com/questions/18695166/qplot-facet-two-histograms
+https://www.khanacademy.org/math/algebra2/exponential-and-logarithmic-functions/introduction-to-logarithms/v/logarithms
+https://www.khanacademy.org/math/algebra2/exponential-and-logarithmic-functions/e-and-the-natural-logarithm/v/e-through-compound-interest
+https://www.khanacademy.org/math/algebra2/exponential-and-logarithmic-functions/e-and-the-natural-logarithm/v/e-as-limit
+https://www.khanacademy.org/math/algebra2/exponential-and-logarithmic-functions/properties-of-logarithms/v/introduction-to-logarithm-properties
+https://www.khanacademy.org/math/algebra2/exponential-and-logarithmic-functions/properties-of-logarithms/v/sum-of-logarithms-with-same-base
+https://www.khanacademy.org/math/algebra2/exponential-and-logarithmic-functions/properties-of-logarithms/v/using-multiple-logarithm-properties-to-simplify
+https://www.khanacademy.org/math/algebra2/exponential-and-logarithmic-functions/change-of-base-formula-for-logarithms/v/change-of-base-formula
+https://www.khanacademy.org/math/algebra2/exponential-and-logarithmic-functions/solving-exponential-equations-with-logarithms/v/exponential-equation
+https://stackoverflow.com/questions/6437164/removing-empty-rows-of-a-data-file-in-r
+Learn more about the dplyr package. https://blog.rstudio.org/2014/01/17/introducing-dplyr/
+
+
+
+Introduction to dplyr (knitted html file) 
+http://rstudio-pubs-static.s3.amazonaws.com/11068_8bc42d6df61341b2bed45e9a9a3bf9f4.html
+
+The following tutorials are presented by Hadley Wickham at useR 2014.
+
+    Introduction of dplyr https://www.r-bloggers.com/hadley-wickham-presents-dplyr-at-user-2014/
+    dplyr Tutorial Part 1 https://www.r-bloggers.com/hadley-wickhams-dplyr-tutorial-at-user-2014-part-1/
+    dplyr Tutorial Part 2 https://www.r-bloggers.com/hadley-wickhams-dplyr-tutorial-at-user-2014-part-2/
+
+There are other ways to work with data and create new data frames without using the dplyr package. 
+Learn about the R functions lapply, tapply, and split in a blog post. 
+https://rollingyours.wordpress.com/2014/10/20/the-lapply-command-101/
+
+For more on geom_line(), you can check the documentation here.
+http://ggplot2.tidyverse.org/reference/geom_path.html
+
+https://www.r-bloggers.com/date-formats-in-r/
+http://www.statisticssolutions.com/correlation-pearson-kendall-spearman/
+https://en.wikipedia.org/wiki/Monotonic_function
+https://stat.ethz.ch/R-manual/R-devel/library/stats/html/cor.test.html
+http://www.r-tutor.com/elementary-statistics/numerical-measures/correlation-coefficient
+https://s3.amazonaws.com/udacity-hosted-downloads/ud651/correlation_images.jpeg
+https://simplystatistics.org/2014/02/13/loess-explained-in-a-gif/
+https://en.wikipedia.org/wiki/Local_regression
+http://www.mindmapinspiration.com/
+http://dept.stat.lsa.umich.edu/~kshedden/Courses/Stat401/Notes/401-bivariate-slides.pdf
+https://stackoverflow.com/questions/10150579/adding-a-column-to-a-data-frame
+https://stackoverflow.com/questions/13287537/adjusting-the-limits-of-x-and-y-axis-when-adding-new-curves-to-a-plot-in-r
+https://stackoverflow.com/questions/1923273/counting-the-number-of-elements-with-the-values-of-x-in-a-vector
+https://www.r-bloggers.com/dplyr-example-1/
+https://stats.idre.ucla.edu/
+https://stats.idre.ucla.edu/r/seminars/ggplot2_intro/ 
+
+# use this link for very good description of aes overlays for the project
+# first discovered in Lesson 6, Quiz 12
+# https://stats.idre.ucla.edu/r/seminars/ggplot2_intro/
+# and this shows how to modify, to personalize the look of graphs... it's called theme and is very good:
+# http://ggplot2.tidyverse.org/reference/theme.html
+https://stats.idre.ucla.edu/r/seminars/ggplot2_intro/ # This shows lots of different ways to color and spiff up graphs
+http://127.0.0.1:41441/help/library/reshape2/html/00Index.html # reshape2 functions. I was researching melt... 
+
+https://stackoverflow.com/questions/3443687/formatting-decimal-places-in-r
+
+set.seed:
+https://www.google.ca/?gfe_rd=cr&ei=i9BXWZvPKKfj8AeVxZ6ICw#q=what+does+set.seed+mean+in+r
+https://stackoverflow.com/questions/13605271/reasons-for-using-the-set-seed-function
+http://stattrek.com/statistics/random-number-generator.aspx#seed
+
+need the factor code to use the length function in R Lesson 7 Quiz 21
+https://discussions.udacity.com/t/lesson-5-looking-at-samples-of-households-help/28628/6
+
+syntax %in%:
+	https://discussions.udacity.com/t/looking-at-samples-of-households-in/161911
+
+MORE ON DIAMONDS:
+colors:
+http://ggplot2.tidyverse.org/reference/scale_brewer.html
+
+http://www.bluenile.com/diamonds/diamond-cut
+
+Diamond Prices over the Years
+http://www.pricescope.com/diamond-prices/diamond-prices-chart
+
+Global Diamond Report
+http://www.bain.com/publications/articles/global-diamond-report-2013.aspx
+
+Falling Supply and Rising Demand: Couples in Shanghai take to the Ring
+http://diamonds.blogs.com/diamonds_update/diamond-prices/
+
+LINEAR MODELLING LINKS:
+http://data.princeton.edu/R/linearModels.html
+
+IID assumption 
+http://en.wikipedia.org/wiki/Independent_and_identically_distributed_random_variables
+
+If you'd like to learn more about linear models and how to interpret regression coefficients, 
+please refer to the following articles.
+
+Interpreting Regression Coefficients in R on R Bloggers
+http://www.r-bloggers.com/interpreting-regression-coefficient-in-r/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+RBloggers+%28R+bloggers%29
+
+Interpreting Regression Coefficients on the Analysis Factor blog
+http://www.theanalysisfactor.com/interpreting-regression-coefficients/
+
+Fitting and Interpreting Linear Models by ŷhat
+http://blog.yhathq.com/posts/r-lm-summary.html
+
+Another Explanation of Factor Coefficients in Linear Models on Stats StackExchange
+http://stats.stackexchange.com/a/24256
+
+Links open when I shut down July 7, 2017 2:41pm
+https://www.google.ca/?gfe_rd=cr&ei=rhVeWez7NqXM8Afry7_QAQ#q=r+set+the+right+margin+guidelines
+https://support.rstudio.com/hc/en-us/articles/200549016-Customizing-RStudio
+https://classroom.udacity.com/nanodegrees/nd002/parts/0021345407/modules/316518875375461/lessons/3165188753239847/project
+https://discussions.udacity.com/c/nd002-data-analysis-with-r/nd002-p-explore-and-summarize-data
+https://discussions.udacity.com/t/red-wine-quality-daset/297197/7
+https://discussions.udacity.com/t/having-problem-with-rmd-file-knit-to-html/298843
+
+From Project category - forum
+Use this subcategory to ask question regarding your Explore and Summarize Data project.
+https://discussions.udacity.com/t/about-the-p4-explore-and-summarize-data-category/27574
+https://discussions.udacity.com/c/nd002-data-analysis-with-r/nd002-p-explore-and-summarize-data
+
+Research these for ideas for the project:
+From forum: https://discussions.udacity.com/t/quality-white-wine/30411/4
+https://www.google.com/search?q=P.+Cortez%2C+A.+Cerdeira%2C+F.+Almeida%2C+T.+Matos+and+J.+Reis.+Modeling+wine+preferences+by+data+mining+from+physicochemical+properties.&oq=P.+Cortez%2C+A.+Cerdeira%2C+F.+Almeida%2C+T.+Matos+and+J.+Reis.+Modeling+wine+preferences+by+data+mining+from+physicochemical+properties.&aqs=chrome..69i57.283j0j4&sourceid=chrome&es_sm=91&ie=UTF-8 
+But a student wrote: The links to the papers are either not available or require registration(pay)
+Mentor: 
+There are some interesting relationships to find in the white wine data. I do see some possible avenues of exploration in the residual sugar column and density column (looks like relationships in the scatterplots), and there are some reasonable correlations in the table (in the .4 - .6 range). You are not likely to find perfect correlation between two variables, but I think there is enough there to get started.
+
+Set margin line to 80:
+https://support.rstudio.com/hc/en-us/community/posts/207625357-Toggle-80-character-warning-line
+
+Setting up the data:
+https://stackoverflow.com/questions/22432344/how-do-you-change-the-default-directory-in-rstudio-or-r
+https://discussions.udacity.com/t/having-problem-with-rmd-file-knit-to-html/298843/2
+https://discussions.udacity.com/t/having-problem-with-rmd-file-knit-to-html/298843/4
+file encoding: https://discussions.udacity.com/t/errors-about-reading-table/293755
+
+Univariate plots
+my question on ticks and discrete: https://discussions.udacity.com/t/red-wine-quality-daset/297197/6
+http://www.public.iastate.edu/~maitra/stat501/lectures/Outliers.pdf
+
+Discrete and Continous bin widths:
+https://discussions.udacity.com/t/red-wine-quality-daset/297197/7
+- adding as.factor to discrete:
+https://www.stat.berkeley.edu/classes/s133/factors.html
+
+Univariate graphs:
+https://discussions.udacity.com/t/one-question-about-how-to-plot-a-histogram/293794
+
+Code chunks:
+R code chunks can be used as a means render R output into documents or to simply display code for illustration. Here is a simple R code chunk that will result in both the code and it’s output being included:
+http://rmarkdown.rstudio.com/authoring_rcodechunks.html
+That link also includes learning more about:
+The knitr package is an extremely powerful tool for dynamic content generation and is worth studying in detail to understand all of it’s features and capabilities. Good resources for learning more about knitr include: <<there are links for those selections>>
+    The knitr website
+    The knitr manual and knitr graphics manual
+    The galleries of demos and examples
+    The book Dynamic Documents with R and knitr (written by the creator of knitr, Yihui Xie)
+
+Bivariate graphs:
+https://stackoverflow.com/questions/18882206/change-outline-and-fill-colors-of-histogram-with-qplot
+https://www.w3schools.com/colors/colors_picker.asp
+https://discussions.udacity.com/t/ggpairs-function/287231/9
+Chapter on qplot: https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=2&ved=0ahUKEwiZmLT_ws_VAhXGeSYKHSxADwIQFggzMAE&url=http%3A%2F%2Fwww.springer.com%2Fcda%2Fcontent%2Fdocument%2Fcda_downloaddocument%2F9780387981406-c1.pdf%253FSGWID%253D0-0-45-766402-p173897424&usg=AFQjCNGiA2W0KeuRb0PhzjBr-TJ0IZ4guQ
+http://www.sthda.com/english/wiki/ggplot2-easy-way-to-mix-multiple-graphs-on-the-same-page
+https://stackoverflow.com/questions/21192002/how-to-combine-2-plots-ggplot-into-one-plot
+http://ggplot2.tidyverse.org/reference/aes_linetype_size_shape.html
+https://stat.ethz.ch/pipermail/r-help/2012-December/343726.html
+http://r.789695.n4.nabble.com/ggplot-geom-smooth-colour-td4653301.html#a4653312
+https://stackoverflow.com/questions/14727433/how-can-i-add-regression-lines-to-a-plot-that-has-multiple-data-series-that-are
+http://rstudio-pubs-static.s3.amazonaws.com/13295_560bc4c80d6d41ef808250ea0a015a42.html
+https://discussions.udacity.com/t/problems-with-knitr/166627/2
+https://discussions.udacity.com/t/problems-with-knitr/166627/14
+http://t-redactyl.io/blog/2016/04/creating-plots-in-r-using-ggplot2-part-10-boxplots.html
+https://stackoverflow.com/questions/7201341/how-can-2-strings-be-concatenated
+https://stat.ethz.ch/R-manual/R-devel/library/base/html/paste.html
+https://stackoverflow.com/questions/8599685/how-to-change-correlation-text-size-in-ggpairs
+https://rstudio.github.io/dygraphs/r-markdown.html
+https://briatte.github.io/ggcorr/  very good as a substitute for ggpairs
+http://ggplot2.tidyverse.org/reference/position_dodge.html
+https://stackoverflow.com/questions/15633714/adding-a-regression-line-on-a-ggplot
+http://ggplot2.tidyverse.org/reference/geom_smooth.html   display confidence interval around the smooth (se)
+
+
+
+Multivariate
+Grid arrange logs:
+https://discussions.udacity.com/t/scale-x-continous-axis-titles-red-wine-project/273578/7
+https://stackoverflow.com/questions/14207739/how-to-remove-outliers-in-boxplot-in-r
+https://stackoverflow.com/questions/6897243/labelling-logarithmic-scale-display-in-r
+https://stackoverflow.com/questions/6955440/displaying-minor-logarithmic-ticks-in-x-axis-in-r
+https://stackoverflow.com/questions/14622421/how-to-change-legend-title-in-ggplot 
+https://www.google.ca/url?sa=t&rct=j&q=&esrc=s&source=web&cd=4&cad=rja&uact=8&ved=0ahUKEwim45fByubVAhUM5oMKHZ-CCpYQFgg3MAM&url=https%3A%2F%2Fwww.stat.auckland.ac.nz%2F~ihaka%2F787%2Flectures-quantiles.pdf&usg=AFQjCNExy14FVZPnkD1R0nAcf6NbQw3Z2A
+http://www.tablesgenerator.com/markdown_tables
+http://fletcher.github.io/MultiMarkdown-5/tables.html
+https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf
+https://stackoverflow.com/questions/24491023/ploting-density-histograms-with-ggplot
+https://stackoverflow.com/questions/3541713/how-to-plot-two-histograms-together-in-r
+https://stackoverflow.com/questions/18162425/the-difference-between-geom-density-in-ggplot2-and-density-in-base-r
+https://discussions.udacity.com/t/use-of-density-vs-stat-density/209325
+https://discussions.udacity.com/t/what-is-the-difference-between-density-and-density-sum-density/184687
+https://discussions.udacity.com/t/scale-x-log10/185487
+https://discussions.udacity.com/t/question-9-in-problem-set-3-how-to-set-proper-binwidth-using-log10-scale/14071/4
+https://discussions.udacity.com/t/hough-transform-r-table-from-data-set/46752
+https://discussions.udacity.com/search?q=make%20a%20table%20in%20R
+http://rmarkdown.rstudio.com/authoring_basics.html
+https://discussions.udacity.com/t/bullet-points-in-r-markdown/18562
+https://stackoverflow.com/questions/6897243/labelling-logarithmic-scale-display-in-r
+https://stackoverflow.com/questions/6955440/displaying-minor-logarithmic-ticks-in-x-axis-in-r
+http://ggplot2.tidyverse.org/reference/aes_colour_fill_alpha.html This is diff between fill and color in aes
+
+
+
+Bin widths on multiplots:
+https://discussions.udacity.com/t/creating-factor-variables-red-wine-project/268571/3
+
+Giving student made ratings to wines:
+https://discussions.udacity.com/t/creating-factor-variables-red-wine-project/268571/3
+
+Plotting residuals:
+https://discussions.udacity.com/t/how-to-plot-residuals-in-r-ggplot2/266812/4
+
+Linear modelling with Identity function
+https://discussions.udacity.com/t/got-error-when-plotting-the-residuals-for-my-linear-model/251243
+
+Messy tables - group items instead.
+https://discussions.udacity.com/t/problem-with-mtable/250220
+
+Plotting with categorical data:
+http://seaborn.pydata.org/tutorial/categorical.html
+
+Link to R Cheat Sheet of Graph types
+https://www.rstudio.com/wp-content/uploads/2016/11/ggplot2-cheatsheet-2.1.pdf
+
+Errors in certain visualizations:
+https://discussions.udacity.com/t/global-option-chunk-for-organization/245819
+
+Unnecessary warning messages: 
+https://discussions.udacity.com/t/unnecessary-warnings-messages/237279
+
+Ordering:
+https://discussions.udacity.com/t/order-bar-chart/244855/2
+
+Sorting:
+https://discussions.udacity.com/t/trouble-counting-string-rows/244628/2
+
+Chart idea: chart of density vs alcohol colored by quality - very nice
+https://discussions.udacity.com/t/quality-as-factor-ruins-chart/242781
+scale_fill_brewer:
+http://ggplot2.tidyverse.org/reference/scale_brewer.html
+
+Add a log curve on top of a histogram:
+https://discussions.udacity.com/t/adding-normal-curve-in-histogram/243627
+
+Linear models dont work on factored data:
+https://discussions.udacity.com/t/lm-on-cut-data/236677
+
+Subsetting:
+https://discussions.udacity.com/t/subsetting-candidates/231047
+
+Removing outliers. 
+https://discussions.udacity.com/t/removing-outliers-with-coord-cartesian-or-scale-y-continuous/231002
+
+Change legend position:
+https://discussions.udacity.com/t/ggplot-stack-legends/230995/2
+http://www.sthda.com/english/wiki/ggplot2-legend-easy-steps-to-change-the-position-and-the-appearance-of-a-graph-legend-in-r-software#change-the-legend-position
+
+Wine Research papers read:
+* Modeling wine preferences by data mining from physicochemical properties: 
+https://pdfs.semanticscholar.org/bebb/83a340b77917acc0a59d55ddab066e9c1acf.pdf
+https://pdfs.semanticscholar.org/cef8/e67d8e6f4a23dc7817959b4198dcc0995cd4.pdf
+* Red wine preferences from physicochemical properties: 
+https://rstudio-pubs-static.s3.amazonaws.com/64329_b0ed679e48b04f00a404f6f969d855d7.html
+
+* This one looks like an excellent report - comparing the same red and white datasets.
+RPubs Red and White Wine Quality: https://rpubs.com/Daria/57835
+
+* My request to compare red and white wines:
+https://discussions.udacity.com/t/use-both-red-and-white-wine-datasets/304904
+
+Publish code from RMarkdown to HTML with knitr:
+http://neon-workwithdata.github.io/neon-data-institute-2016/tutorial-series/pre-institute3/rmd03
+
+Create an RMD file:
+http://neon-workwithdata.github.io/neon-data-institute-2016/tutorial-series/pre-institute3/rmd03
+
+Research while doing my project:
+
+https://stackoverflow.com/questions/17514648/how-do-i-name-the-row-names-column-in-r
+https://egret.psychol.cam.ac.uk/statistics/R/enteringdata.html
+
+
+
+
+
+
+
+
+

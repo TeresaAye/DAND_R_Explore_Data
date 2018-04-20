@@ -1,0 +1,3444 @@
+```{r global_options, echo=FALSE}
+# Here is code that will turn off warnings and not display code, 
+# if you put it at the top of your file before the title section (YAML section), 
+# it will create the default options:
+ library(knitr) # also to output markdown to html
+ knitr::opts_chunk$set(fig.width=7,fig.height=6,fig.path='Figs/',
+                      fig.align='center',tidy=TRUE,
+                      echo=FALSE,warning=FALSE,message=FALSE)
+```
+
+
+Red and White Wine - R Project Explore and Summarize Data by Teresa Aysan
+=========================================================================
+
+
+September 3, 2017
+
+
+# Citation and Data Structure
+
+Citation Request by the creators of the data:
+  This dataset is publicly available for research. The details are described in 
+  [Cortez et al., 2009]. 
+  I am including this citation because I plan to use this database:
+
+  P. Cortez, A. Cerdeira, F. Almeida, T. Matos and J. Reis. 
+  Modeling wine preferences by data mining from physicochemical properties.
+  In Decision Support Systems, Elsevier, 47(4):547-553. ISSN: 0167-9236.
+
+  Available at: [@Elsevier] http://dx.doi.org/10.1016/j.dss.2009.05.016
+                [Pre-press (pdf)] http://www3.dsi.uminho.pt/pcortez/
+                winequality09.pdf
+                [bib] http://www3.dsi.uminho.pt/pcortez/dss09.bib
+
+I will be using both the red and white wine datasets. The citation request 
+continues:
+
+1. Title: Wine Quality 
+
+2. Sources
+   Created by: Paulo Cortez (Univ. Minho), Antonio Cerdeira, Fernando Almeida, 
+   Telmo Matos and Jose Reis (CVRVV) @ 2009
+   
+3. Past Usage:
+
+  P. Cortez, A. Cerdeira, F. Almeida, T. Matos and J. Reis. 
+  Modeling wine preferences by data mining from physicochemical properties.
+  In Decision Support Systems, Elsevier, 47(4):547-553. ISSN: 0167-9236.
+
+  In the above reference, two datasets were created, using red and white wine 
+  samples.
+  The inputs include objective tests (e.g. PH values) and the output is based 
+  on sensory data
+  (median of at least 3 evaluations made by wine experts). Each expert graded 
+  the wine quality 
+  between 0 (very bad) and 10 (very excellent). Several data mining methods 
+  were applied to model
+  these datasets under a regression approach. The support vector machine model 
+  achieved the
+  best results. Several metrics were computed: MAD, confusion matrix for a 
+  fixed error tolerance (T),
+  etc. Also, we plot the relative importances of the input variables (as 
+  measured by a sensitivity
+  analysis procedure).
+ 
+4. Relevant Information:
+
+   The two datasets are related to red and white variants of the Portuguese 
+   "Vinho Verde" wine.
+   For more details, consult: http://www.vinhoverde.pt/en/ or the reference 
+   [Cortez et al., 2009].
+   Due to privacy and logistic issues, only physicochemical (inputs) and 
+   sensory (the output) variables 
+   are available (e.g. there is no data about grape types, wine brand, 
+   wine selling price, etc.).
+
+   These datasets can be viewed as classification or regression tasks.
+   The classes are ordered and not balanced (e.g. there are munch more normal 
+   wines than
+   excellent or poor ones). Outlier detection algorithms could be used to 
+   detect the few excellent
+   or poor wines. Also, we are not sure if all input variables are relevant. 
+   So
+   it could be interesting to test feature selection methods. 
+
+5. Number of Instances: red wine - 1599; white wine - 4898. 
+
+6. Number of Attributes: 11 + output attribute
+  
+   Note: several of the attributes may be correlated, thus it makes sense to 
+   apply some sort of
+   feature selection.
+
+7. Attribute information:
+
+   For more information, read [Cortez et al., 2009].
+
+   Input variables (based on physicochemical tests):
+   1 - fixed acidity (tartaric acid - g / dm^3)
+   2 - volatile acidity (acetic acid - g / dm^3)
+   3 - citric acid (g / dm^3)
+   4 - residual sugar (g / dm^3)
+   5 - chlorides (sodium chloride - g / dm^3
+   6 - free sulfur dioxide (mg / dm^3)
+   7 - total sulfur dioxide (mg / dm^3)
+   8 - density (g / cm^3)
+   9 - pH
+   10 - sulphates (potassium sulphate - g / dm3)
+   11 - alcohol (% by volume)
+   Output variable (based on sensory data): 
+   12 - quality (score between 0 and 10)
+
+8. Missing Attribute Values: None
+
+9. Description of attributes:
+
+   1 - fixed acidity: most acids involved with wine or fixed or nonvolatile 
+   (do not evaporate readily)
+
+   2 - volatile acidity: the amount of acetic acid in wine, which at too high 
+   of levels can lead to an unpleasant, vinegar taste
+
+   3 - citric acid: found in small quantities, citric acid can add 'freshness' 
+   and flavor to wines
+
+   4 - residual sugar: the amount of sugar remaining after fermentation stops, 
+   it's rare to find wines with less than 1 gram/liter and wines with greater 
+   than 45 grams/liter are considered sweet
+
+   5 - chlorides: the amount of salt in the wine
+
+   6 - free sulfur dioxide: the free form of SO2 exists in equilibrium between 
+   molecular SO2 (as a dissolved gas) and bisulfite ion; it prevents microbial 
+   growth and the oxidation of wine
+
+   7 - total sulfur dioxide: amount of free and bound forms of S02; in low 
+   concentrations, SO2 is mostly undetectable in wine, but at free SO2 
+   concentrations over 50 ppm, SO2 becomes evident in the nose and taste of 
+   wine
+
+   8 - density: the density of water is close to that of water depending on 
+   the percent alcohol and sugar content
+
+   9 - pH: describes how acidic or basic a wine is on a scale from 0 
+   (very acidic) to 14 (very basic); most wines are between 3-4 on the pH scale
+
+   10 - sulphates: a wine additive which can contribute to sulfur dioxide gas 
+   (S02) levels, wich acts as an antimicrobial and antioxidant
+
+   11 - alcohol: the percent alcohol content of the wine
+
+   Output variable (based on sensory data): 
+   
+   12 - quality (score between 0 and 10)
+
+End of citation
+
+
+# Introduction to the Datasets That I'm Planning to Explore
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+# Load all of the packages that you end up using in your analysis in this code
+# chunk.
+
+# Notice that the parameter "echo" was set to FALSE for this code chunk. This
+# prevents the code from displaying in the knitted HTML output. You should set
+# echo=FALSE for all code chunks in your file, unless it makes sense for your
+# report to show the code that generated a particular plot.
+
+# The other parameters for "message" and "warning" should also be set to FALSE
+# for other code chunks once you have verified that each plot comes out as you
+# want it to. This will clean up the flow of your report.
+
+library(dplyr) # To group data
+library(GGally) # for use with ggpairs function
+library(ggplot2) # Need this for plotting
+library(gridExtra) # Need this for grid.arrange
+library (MASS) # use for rlm
+library(memisc) # For the identity function in modelling
+library (rmarkdown)
+library(scales) # For log10_trans
+library(splines) # for the linear modeling
+
+
+```
+
+
+I chose the Red and White Wine datasets becaue they are tidy datasets.
+I wanted tidy data to shorten the time spent on this project. Even so, it took
+many hours to complete this project. 
+
+When I looked at the list of datasets available, the wine datasets immediately 
+caught my eye because I have always wondered how sommeliers evaluate the
+quality of wine.
+
+I initially chose red wine because I perceive it to have a higher status 
+in society than white wine. I like both red and white wine, 
+depending on the situation and the accompanying food.
+
+As you will see in my list of references, I did extensive research on the 
+forum blogs.
+
+To my surprise I found that the students who chose either red wine or white
+wine were not thrilled with the correlation and the analysis that they could do
+within each of the red and white wine datasets.
+One mentor commented that it is a good exercise to discover that data is not 
+always highly correlated positively or negatively. That's a good point,
+but I kept reading and researching. 
+
+Some forum blogs included links to outside articles on the properties that 
+make up good wine. I read most of those articles. 
+
+I decided that I wanted to compare red and white wine data against each other.
+I thought it would be more interesting.
+
+I will be including a reference document in my project submission folder,
+but I will not be footnoting each time I borrow fixes from the blogs, or 
+others' ideas, as I would if I were publishing an article. 
+I believe that falls within the spirit of the intent of the project which
+is to learn to explore and summarize data through R.
+
+The above citation fully explains the 11 input variables and 1 output
+variable in the wine datasets.
+
+
+## Load the data
+
+I've chosen to use "data" as the name of the dataset so that I 
+can easily reuse some of this code for other projects.
+
+My data is the merge of both the red wine and white wine datasets.
+In some cases I will use only the red wine dataset or the white wine dataset
+as the plot requires for analysis purposes.
+
+
+```{r echo=FALSE, Load_the_Data}
+
+# Load the Data
+# I will work with both red and white wine data
+
+# getwd() # Used this to make sure I am working in the R project directory. 
+# If not set it with Alt TG
+# Load the red wine data
+rw <- read.csv('wineQualityReds.csv', fileEncoding = "utf-8")
+ww <- read.csv('wineQualityWhites.csv', fileEncoding = "utf-8")
+
+# I want to combine both data sets into one data set
+# So, I have to add a color attribute to each
+
+rw['color'] <- 'red'
+ww['color'] <- 'white'
+
+# and now merge them into one dataset
+
+data <- rbind(rw,ww)
+
+# check that  the merge was successful
+head(data)
+tail(data)
+
+```
+
+
+The above shows first the 6 rows and last 6 rows of the data to ensure that 
+the red
+and white wine datasets have been merged. I see red in the head, and
+white in the tail. Success.
+
+
+```{r echo=FALSE}
+# Number of rows (incidents) and columns (features)
+dim(data)
+```
+
+
+The dimensions of the data - Number of instances (rows) x number of 
+attributes (columns).
+
+
+## Structure of the Wine Dataset
+
+
+``` {r echo=FALSE}
+# Structure of the dataset
+str(data)
+```
+
+
+The structure of the wine dataset.
+
+
+# Univariate Plots Section
+
+In this section I will perform some preliminary exploration of
+my dataset. I will run some summaries of the data and create univariate plots 
+to understand the structure of the individual variables in my dataset.
+
+
+## Summary of the Wine attributes
+
+First I will summarize the attributes of the wine dataset so that I can refer 
+to them later when I am planning and designing my plots.
+
+
+```{r echo=FALSE, Univariate_Plots}
+# Summary of each feature (min, max, mean, median, quartiles)
+summary(data$fixed.acidity)
+summary(data$volatile.acidity)
+summary(data$citric.acid)
+summary(data$residual.sugar)
+summary(data$chlorides)
+summary(data$free.sulfur.dioxide)
+summary(data$total.sulfur.dioxide)
+summary(data$density)
+summary(data$pH)
+summary(data$sulphates)
+summary(data$alcohol)
+summary(data$color)
+summary(data$quality)
+
+```
+
+
+The summaries of the wine attributes in the following order:
+
+Input variables:
+
+   1 - fixed.acidity 
+   
+   2 - volatile.acidity 
+   
+   3 - citric.acid 
+   
+   4 - residual.sugar 
+   
+   5 - chlorides 
+   
+   6 - free.sulfur.dioxide 
+   
+   7 - total.sulfur.dioxide 
+   
+   8 - density 
+   
+   9 - pH
+   
+   10 - sulphates 
+   
+   11 - alcohol 
+   
+   12 - color
+   
+   
+Output variable (based on sensory data): 
+
+   13 - quality (score between 0 and 10)
+  
+   
+That's ok, but I want it all in one table.
+
+
+```{r echo=FALSE}
+# Summary of all of the features in one table
+summary(data)
+
+```
+
+
+The summary of the data all in one table.
+
+
+### Observations of the summary of the attributes:
+
+
+#### Column "x"
+
+Although there are 6,497 instances, the maximum in the "X" ind column is 4,898.
+
+
+```{r echo=FALSE}
+# Dimensions of each of red wine and white wint (# instances / # features)
+dim(rw)
+dim(ww)
+```
+
+
+Dimensions of the red and white wine instances when they were in 
+their own databases.
+
+
+```{r echo=FALSE}
+# Showing where the variable x ends for red wine and starts over for white wine
+# which results in duplication of numbers 1 to 1599
+data$X[1595:1620]
+
+```
+
+
+Therefore there are duplicate values in the "X" column from 1 to 1599 
+and from 1600 to 3198, since white wine will restart at the number 1 in
+the "X" column as we see here from row 1595 to row 1619.
+
+
+``` {r, echo = TRUE}
+# I added a column with row.no, but it interfered with the data later on,
+# probably because it was added as a factor, so I chose not to do that.
+# This is the code that I wrote for that - but that I will not use.
+# data['index'] <- row()
+# data <- cbind(row.no = rownames(data), data)
+# dim(data)
+# head(data)
+# tail(data)
+# str(data)
+# summary(data)
+```
+
+
+``` {r, echo = FALSE}
+# Added a field so that I would have unique row numbers in case I needed it
+# in the analysis. 
+data['row.no.int'] <- c(1:6497)
+
+# Show that it was added successfully by showing the dimension 
+# (# rows / features), a few rows from the top (head), a few rows
+# from the bottom (tail), the structure and a summary of the data.
+dim(data)
+head(data)
+tail(data)
+str(data)
+summary(data)
+```
+
+
+Above is the new dataset summarized.
+
+* the new dimensions of my dataset
+
+* the head
+
+* the tail
+
+* the structure
+
+* and the summary
+
+I created a column of row numbers that are integers called row.no.int.
+
+
+``` {r, echo = FALSE}
+names(data)
+```
+
+
+Above are the names of the variables.
+
+In the end, I did not use the row.no.int in any of my plots or analysis, 
+but I learned a lot in adding it.
+
+
+#### Outliers
+
+Many of the variables have a maximum that is much greater than the mean or 
+the third quartile.
+
+For example:
+
+- fixed.acidity Mean is 7.215, 3rd Qu. is 4.7, but Max is 15.9
+- volatile.acidity Mean is 0.3397, 3rd Qu. is 0.4000, but Max is 1.5800
+- citric.acid Mean is 0.3186, 3rd Qu. is 0.3900, but Max is 1.6600
+- total.sulfur.dioxide Mean is 115.7, 3rd Qu. is 156.0, but Max is 440.0
+- sulphates Mean is 0.5313, 3rd Qu. is 0.6000, but Max is 2.0000
+
+This may indicate that there are outliers in the dataset or that the
+distribution is skewed.
+
+
+##### Univariate - max to mean ratio <2 times
+
+
+``` {r, echo = FALSE}
+# Calculating the ratio max to mean for the features that will result in
+# a low ratio (less than 2 times)
+density.MaxToMean.ratio <- 1.039 / .9947
+pH.MaxToMean.ratio <- 4.010 / 3.219
+alcohol.MaxToMean.ratio <- 14.9 / 10.49
+density.MaxToMean.ratio
+pH.MaxToMean.ratio
+alcohol.MaxToMean.ratio
+```
+
+
+Those are the max to mean ratios for density, ph and alcohol.
+
+
+The ratio is less than 2 times Max to Mean in:
+
+- Density Mean is 0.9947, 3rd Qu. is 0.9970, Max is 1.0390 and Max to 
+Mean ratio is 1.044536.
+
+- pH Mean is 3.219, 3rd Qu. is 3.320, Max is 4.010, and Max to Mean
+ratio is 1.245728.
+
+- alcohol Mean is 10.49, 3rd Qu. is 11.30, Max is 14.90 and Max to Mean
+ratio ius 1.4204.
+
+None of these ratios are greater than 1.5.
+
+
+##### Univariate - max to mean ratio 2-5 times
+
+
+``` {r, echo = FALSE}
+# Calculating the ratio max to mean for the features that will result in
+# a medium ratio (2-5 times)
+fixed.acidity.MaxToMean.ratio <- 15.9 / 7.215
+volatile.acidity.MaxToMean.ratio <- 1.58 / 0.3397
+citric.acid.MaxToMean.ratio <- 1.66 / 0.3186
+total.sulfur.dioxides.ratio <- 440 / 115.7
+sulphates.ratio <- 2 / .6
+fixed.acidity.MaxToMean.ratio
+volatile.acidity.MaxToMean.ratio
+citric.acid.MaxToMean.ratio
+total.sulfur.dioxides.ratio
+sulphates.ratio
+```
+
+
+Those are the max to mean ratios for fixed.acidity, volatile.acidity, 
+citric.acid, total.sulfur.dioxides and sulphates.
+
+In this group, the Max to Mean ratio is at least 2 times and I did not include
+any ratios that were greater than 5 times.
+
+
+##### Univariate - max to mean ratio 9+ times
+
+
+``` {r, echo = FALSE}
+# Calculating the ratio max to mean for the features that will result in
+# a high ratio (9+ times)
+residual.sugar.ratio <- 65.8 / 5.443
+chlorides.ratio <- .611 / .05603
+free.sulfur.dioxides.ratio <- 289 / 30.53
+residual.sugar.ratio
+chlorides.ratio
+free.sulfur.dioxides.ratio
+```
+
+
+Those are the Max to Mean ratios for residual.sugar, chlorides and 
+free.sulfur.dioxides.
+
+They have
+a much higher ratio of Max to Mean. They are 9 times or more.
+
+- residual.sugar Mean is 5.443, Max is 65.8 and the ratio is 12.08892
+
+- chlorides Mean is 0.05603, Max is 0.61100 and the ratio is 10.90487
+
+- free.sulfur.dioxides Mean is 30.53, Max is 289.00 and the ratio is 9.466099
+
+
+## What is/are the main feature(s) of interest in your dataset?
+
+The main feature in my data set that I'd like to explore is color. 
+I'd like to compare the red and white wines, and what makes up the quality of 
+each.
+
+
+### Univariate - color
+
+
+```{r, echo = FALSE}
+# A simple histogram of the number of instances of each of red and white wine.
+table(data$color)
+qplot(color, data = data) 
+```
+
+
+There are 3 times as many white wine instances in the dataset as red wine 
+instances.
+
+
+### Univariate - quality
+
+
+```{r, echo = FALSE}
+# A simple histogram of the number of instances of the different levels of
+# quality.
+table(data$quality)
+qplot(quality, data = data, binwidth = 1) 
+```
+
+
+The quality over all instances is mainly in the midrange of 5 and 6, on a 
+scale of 1 to 10.
+
+The table shows that none of the instances were rated as 1, 2 or 10.
+
+The histogram shows that the quality follows a standard 
+distribution. 
+
+However, the reviewer taught me: "Please note quality is ordinal (ordered 
+categorical variable) rather than numerical, since the difference between 
+quality 3 and quality 4 isn't necessary the same as that between quality 5 
+and 6, and we don't have ratings like 8.7 or 6.3. Another example for 
+ordinal variable might be: first place, second place and third place in a 
+match. Since quality is ordinal, it is a good practice to choose a bar plot 
+instead of a histogram to reflect this fact:"
+
+
+```{r, echo=FALSE}
+ggplot(aes(x = quality), data = data) +
+       geom_bar()+
+       xlab("Wine Quality rating") + ylab("Count") +
+       ggtitle("Bar of Wine Quality")
+```
+
+
+This bar graph of wine quality is better than the histogram because quality
+is ordinal, meaning that each value is an independent integer, and there are no
+values in between the integres, such as 6.3 or 8.7.
+
+
+### Univariate - ratios of max to mean
+
+Now, I'd like to check some of the variables for which there were low, medium
+and high ratios, to see if there was an obvious reason for the differences.
+
+I'll look at one in each of the ratio buckets that I observed above:
+
+- low (less than 2 ratio): I'll use alcohol (ratio 1.4204)
+- medium (from 2 to 5 ratio): I'll use volatile.acidity (ratio of 4.651163) 
+- high (9+ ratio): I'll use residual.sugar (ratio of 12.08892)
+
+
+#### Univariate - low max to mean ratio <2 times: alcohol
+
+Since there are many values for alcohol on the x axis, I will use continuous 
+scale, a binwidth of 0.5 and Min of 8 / max of 15 in accordance with the 
+summary for alcohol.
+
+
+```{r, echo = FALSE}
+# A simple histogram of the number of instances of alcohol along
+# the continuous scale
+qplot(alcohol, data = data, binwidth = .5)  +
+  scale_x_continuous(breaks = seq(8,15,.5), lim = c(8, 15))
+
+```
+
+
+The reviewer suggested using bins = 20 or 30. So I'll do that
+instead of binwidths:
+
+
+```{r, echo = FALSE}
+# A simple histogram of the number of instances of alcohol along
+# the continuous scale
+qplot(alcohol, data = data, bins = 30)  +
+  scale_x_continuous(breaks = seq(8,15,.5), lim = c(8, 15))
+
+```
+
+
+The histograms show that the level of alcohol has a long tail to the right.
+
+The first histogram is with binwidth = .5 and the second is with bins = 30.
+The reviewer is quite right - that I should use bins = 20 or 30 
+rather than using binwidths. I'll fix all of the other graphs in the project.
+
+The Mean is 10.49 which is to the right of the peak of the distribution. 
+The second and third quartiles range from 9.5 to 11.3, which is tighly 
+grouped around the median and mean which are very close to each other 
+(10.3 and 10.49 respectively). This grouping may account for the low ratio of
+Max to Mean.
+
+
+#### Univariate - medium max to mean ratio 2-5 times: volatile.acidity
+
+
+```{r, echo = FALSE}
+# A simple histogram of the number of instances of volatile.acidity along
+# the continuous scale
+qplot(volatile.acidity, data = data, bins = 30)  +
+  scale_x_continuous(breaks = seq(min(data$volatile.acidity), 
+                             max(data$volatile.acidity), .1))
+```
+
+
+bins = 30. Scale x is continuous, using the data min, data max, with 
+increments of 0.1.
+
+The distribution shows a long tail to the right,
+so it may be better to use x scale of log10.
+
+
+```{r, echo = FALSE}
+# Histogram of volatile.acidity using log10 to smooth out the distribution.
+# With larger binwidth size and x ticks spread farther apart
+qplot(volatile.acidity, data = data, binwidth = .0065)  +
+  scale_x_log10(breaks = seq(min(data$volatile.acidity), 
+                             max(data$volatile.acidity), .2))
+```
+
+
+```{r, echo = FALSE}
+# Histogram of volatile.acidity using log10 to smooth out the distribution.
+# With larger binwidth size and x ticks spread farther apart
+qplot(volatile.acidity, data = data, bins = 200)  +
+  scale_x_log10(breaks = seq(min(data$volatile.acidity), 
+                             max(data$volatile.acidity), .2))
+```
+
+
+Scale x: log10, min, max, 0.2.
+The first graph uses binwidth = 0.0065. 
+The second graph uses bins = 200.
+They are about the same.
+
+The Mean (0.3397) of volatile.acidity is to the right of the peak of the 
+distribution. There are few instances below 0.18 but many instances of high 
+volatile.acidity and the Max goes quite far to the right. 
+
+This may be contributing to the higher ratio of Max to Mean (4.651163).
+
+The next charts will pull out the red wine and white wines by themselves
+to examine each of their distributions.
+
+
+##### Univariate - medium max to mean ratio 2-5 times: volatile.acidity - \
+Red Wine
+
+This is the red wine volatile.acidity summary:
+
+
+```{r, echo = FALSE}
+# Red wine only - volatile.acidity. Summary and histogram.
+summary(rw$volatile.acidity)
+qplot(volatile.acidity, data = rw, color = "red", bins = 600)  +
+  scale_x_continuous(breaks = seq(min(data$volatile.acidity), 
+                                  max(data$volatile.acidity), .1))
+```
+
+
+```{r, echo = FALSE}
+# Red wine only - volatile.acidity. Summary and histogram.
+summary(rw$volatile.acidity)
+qplot(volatile.acidity, data = rw, fill = "red", bins = 600)  +
+  scale_x_continuous(breaks = seq(min(data$volatile.acidity), 
+                                  max(data$volatile.acidity), .1))
+```
+
+
+```{r, echo=FALSE}
+qplot(volatile.acidity, data = rw, color = I("red"), bins = 600)  +
+  scale_x_continuous(breaks = seq(min(data$volatile.acidity), 
+                                  max(data$volatile.acidity), .1))
+```
+
+
+All of these histograms are for red wine with scale X as continuous.
+The first histogram uses color = "red" which gives a red outline 
+with grey fill,
+the second one uses fill = "red" which fills the histogram bars.
+And yet the first one looks darker.
+
+The third one implements the reviewer's suggestion:
+"The colour legend is not necessary here. 
+You can set colour in this way: color = I("red")"
+
+
+```{r, echo = FALSE}
+# Red wine only. Histogram using scale x log10.
+qplot(volatile.acidity, data = rw, color = "red", bins = 600)  +
+  scale_x_log10(breaks = seq(min(data$volatile.acidity), 
+                             max(data$volatile.acidity), .2))
+```
+
+
+This is red wine histogram using log10(). 
+The log 10 on the x axis spreads out the distribution so that it can be better
+analysed and condenses the values chosen in the right hand tail, pulling 
+in the outliers.
+
+The distribution is somewhat standard, but with
+many peaks and valleys near the top of the distribution.
+
+The wine evaluators selected a wider variety of values at the higher levels of
+volatile.acidity, represented by the denser plot after the mean which is 0.5278.
+
+If the volatile.acidity had been measured to 3 decimals, then the count may 
+have been higher rather than having more values. The high number of values
+with 3 or 4 decimal places reduces the count for each. The dense selections
+in the right hand tail pulls the mean up to 0.5278 even though there are 
+many high counts for the values below 0.5278.
+
+
+##### Univariate - medium max to mean ratio 2-5 times: volatile.acidity - \
+White Wine
+
+This is the white wine summary:
+
+```{r, echo = FALSE}
+# Red wine only - volatile.acidity. Summary and histogram with log10.
+summary(ww$volatile.acidity)
+qplot(volatile.acidity, data = ww, color = I("blue"), bins = 600)  +
+  scale_x_log10(breaks = seq(min(data$volatile.acidity), 
+                             max(data$volatile.acidity), .2))
+```
+
+
+This histogram of white wine also uses log 10() for easier analysis.
+The white wine volatile.acidity has a much smoother curve than red wine
+with the mean at 
+.2782.
+
+
+##### Univariate - medium max to mean ratio 2-5 times: volatile.acidity - \
+using boxplot to identify potential outliers
+
+
+```{r, echo=FALSE}
+# Comparing histogram with boxplot to identify potential outliers
+# As recommended by the reviewer.
+
+p1 <- ggplot(data, aes(x = volatile.acidity)) +
+  geom_histogram(bins = 200) +
+  labs(x = 'Volatile Acidity (g/L)', y = 'Count',
+          title = "Volatile acidity distribution") 
+
+p2 <- ggplot(data, aes(y = volatile.acidity, x = 1)) +
+  geom_boxplot(color = 'blue') +
+  geom_jitter(aes(x = 1, y = volatile.acidity), alpha = 0.09) +
+  labs(y = 'Volatile Acidity (g/L)', x = '',
+          title = "Volatile acidity distribution") +
+  coord_flip()
+
+grid.arrange(p1, p2)
+```
+
+
+The purpose of these plots is to show how effective the second one can 
+be to identify outliers.
+
+
+#### Univariate - high max to mean ratio 9+ times: residual.sugar
+
+
+The reviewer suggested using bins instead of binwidths:
+
+```{r, echo = FALSE}
+# Simple histogram of residual.sugar.
+qplot(residual.sugar, data = data, binwidth = .1)  +
+  scale_x_continuous(breaks = seq(.5, max(data$residual.sugar), 3.5))
+```
+
+```{r, echo = FALSE}
+# Simple histogram of residual.sugar.
+qplot(residual.sugar, data = data, bins = 500)  +
+  scale_x_continuous(breaks = seq(.5, max(data$residual.sugar), 3.5))
+```
+
+
+Both plots: continuous, 0.5, max, 0.5.
+
+The first plot: Binwidth = 0.1, the second plot: bins = 500.
+I'll use bins from now on as suggested by the reviewer.
+
+These histogram shows several peaks and valleys which are hard to see because
+
+there are some outliers that are far to the right.
+
+The reviewer suggested box plot to depict the outliers:
+
+
+```{r, echo = FALSE}
+grid.arrange(ggplot(data, aes( x = 1, y = residual.sugar ) ) + 
+               geom_jitter(alpha = 0.1 ) +
+               geom_boxplot(alpha = 0.2, color = 'red' ) ,
+             ggplot(data, aes( x   = residual.sugar  ) ) + 
+                   geom_histogram(bins=30 ),ncol=2)
+```
+
+This is a boxplot of residual sugar showing the outliers, as suggested
+by the reviewer.
+
+Also, lets see if log10 helps.
+
+
+```{r, echo = FALSE}
+ # Using log10 on the x axis with log = "x" for the ticks
+qplot(residual.sugar, data = data, bins = 500, log = "x")  
+```
+
+
+Bins = 500, log10 and log on the x axis.
+
+This histogram shows the pattern of residual sugar count on a log10 scale 
+on the x axis which spreads out the main distribution without as much
+consideration to the outliers on the x axis. This makes the graph
+easier to interpret.
+
+The residual.sugar count has many peaks and valleys. By using log = "x" for 
+the ticks on the x axis, there is not enough breaks to discern the 
+mean of 5.443.
+
+
+```{r, echo = FALSE}
+ # Adjusting the right margin
+qplot(residual.sugar, data = data, bins = 500)  +
+  scale_x_log10(breaks = seq(0, 25, 5))
+```
+
+
+Bins = 500, log10, 0, 25, 5
+
+This log10 histogram shows better labelling on the x axis. 
+
+It retains the log10 distribution so that there is less consideration given
+to the outliers to the right, and the x axis is labelled such that the mean of
+5.443 can be discerned. The mean is somewhat in a valley between a standard
+distribution on the left hand side and a standard distribution on the right
+hand side. This may have something to do with the difference in 
+residual.sugar between red and white wine.
+
+There are more values selected at the 
+higher residual.sugar levels (the plot is denser), but the lower residual.sugar 
+levels are selected more often (count is higher).
+
+There are many peaks and valleys. I wonder if red wine versus white wine is 
+causing the differences.
+
+
+```{r, echo = FALSE}
+# Same histogram but for red wine only
+qplot(residual.sugar, data = rw, bins = 500)  +
+  scale_x_log10(breaks = seq(0, 25, 5))
+```
+
+
+This is red wine.
+
+Bins = 500, log10, 0, 25, 5.
+
+It has a fairly normal distribution at the lower residual.sugar levels,
+with a tail to the right.
+
+Note that even though I set the max on the x scale to 25, the max of red
+wine is 15.5, so the scale auto adjusted to that max.
+
+
+```{r, echo = FALSE}
+# Same histogram but for white wine only
+qplot(residual.sugar, data = ww, bins = 500)  +
+  scale_x_log10(breaks = seq(0, 25, 5))
+```
+
+
+This is white wine.
+
+Bins = 500, log10, 0, 25, 5.
+
+There is higher residual.sugar in white wine than in red wine.
+
+There are several peaks and valleys in the distribution, showing more 
+variability in the values, starting lower on the scale and denser higher on
+the scale. Therefore most of the density on the high end of residual.sugar
+is due to white wine.
+
+Note that since the max of red wine was 15.5, all of the instances above
+15.5 belong to white wine, hence all of the outliers belong to white wine.
+
+I'll add color.
+
+
+```{r, echo = FALSE}
+# Adding color to the same red wine histogram
+qplot(residual.sugar, data = rw, bins = 500, fill = I("red"), 
+      color = I("red"))  +
+  scale_x_log10(breaks = seq(0,25, 5))
+```
+
+
+Bins = 500, log10, 0, 25, 5.
+
+This is red wine.
+
+It has a fairly normal distribution at the lower residual.sugar levels,
+with a tail to the right.
+
+
+```{r, echo = FALSE}
+# Adding color to the same white wine histogram
+qplot(residual.sugar, data = ww, bins = 500, fill = I("blue"), 
+      color = I("blue"))  +
+  scale_x_log10(breaks = seq(0,25, 5))
+```
+
+
+Bins = 500, log10, 0, 25, 5.
+
+This is white wine.
+
+There is higher residual.sugar in white wine.
+
+There are several peaks and valleys in the distribution, showing more 
+variability in the values, starting lower on the scale and denser higher on
+the scale.
+
+
+```{r, echo = FALSE}
+# try using ggplot to simplify coloring. Also changed y label.
+ggplot(data = rw, aes(x = residual.sugar)) +
+    geom_histogram(bins = 500, color = "#fc7869") +
+    scale_x_log10(breaks = seq(0,25, 5)) + 
+    labs(y = "Frequency")
+```
+
+
+Bins = 500, log10, 0, 25, 5.
+
+This is red wine, using ggplot instead of qplot.
+
+I chose a red that is closer to the red that was autopicked in the red and 
+white histograms below. 
+
+I also played with changing the y label.
+
+
+```{r, echo = FALSE}
+# Using ggplot to simplify coloring of white wine to try to match it
+# to the default color that R will choose in the bivariage plots.
+ggplot(data = ww, aes(x = residual.sugar)) +
+    geom_histogram(bins = 500, color = "#2eb8b8") +
+    scale_x_log10(breaks = seq(0,25, 5)) + 
+    labs(y = "Frequency")
+# OK, I'm happy with my color picks for red and white wine
+```
+
+
+Bins = 500, log10, 0, 25, 5.
+
+This is white wine, using ggplot instead of qplot.
+
+I chose a blue that is closer to the blue that was autopicked in the red and 
+white histograms below. 
+
+I also played with changing the y label.
+
+
+```{r, echo = FALSE}
+# Summaries of red and white wine to compare the min, max, mean, median and
+# quartiles.
+summary(rw$residual.sugar)
+summary(ww$residual.sugar)
+```
+
+
+This is the summary of the red wine residual.sugar, then the white wine
+residual.sugar. See how the white wine shows much broader range in
+variability, starting at the lowest min of 0.6 and ending at highest max 
+of 65.8, with a higher median and mean.
+
+
+# Univariate Analysis
+
+
+## What is the Structure of Your Dataset?
+
+My dataset (data) is made up of the combination of both the red wine (rw) and
+white wine (ww) datasets. 
+
+There are 6497 instances of objective tests in the dataset. 1,599 are of
+red wine and 4,898 are of white wine.
+
+The testers used 11 attributes (such as residual.sugar) to do their tests
+and created one sensory output called quality. 
+
+Quality is an integer and 
+has specific discreet
+values that could range from 1 (very bad) to 10 (very excellent). 
+Only the values of 3 to 9 were
+selected by the testers.
+
+Color is a feature that I added to my combined dataset to indicate if
+the instance is from "red" wine or "white" wine.
+
+General observations:
+
+* there are 3x as many white wine instances as there are red wine
+instances which may skew the overall results of the analysis.
+
+* the median quality of the wine is 6 and the mean is 5.8, which is slightly
+above the mathematical average of 5.5. 
+
+* the mean alcohol content of the wine is 10.49%. In the bivariate section,
+it will be interesting to see if there is a variance between red and
+white wines.
+
+* the mean volatile.acidity is 0.3397. It will be interesting to see in the
+bivariate plots section how this correlates to quality. High levels of 
+acetic acid can lead to an unpleasant vinegar taste. I suspect that 0.3397
+is pleasant since the median of quality was 6.
+
+* the median residual.sugar is 3 grams / liter which is quite low. As the 
+citation says "it's rare to find wines with less than 1 gram/liter and 
+wines with greater than 45 grams/liter are considered sweet". So, the wines
+being analysed are not in the sweet category.
+
+
+## What is/are the Main Feature(s) of Interest in Your Dataset?
+
+I wanted to analyse the differences between red and white wine, rather
+than just the features within either red wine or white wine.
+
+
+## What Other Features in the Dataset do you Think Will Help Support Your \
+Investigation Into Your Feature(s) of Interest?
+
+* In addition to color, I am mainly interested in quality and
+in understanding the differences
+in the max to 
+mean ratios. Why is the ratio low (Max <= 2x Mean), medium (2-5 times), and
+high (9+ times) for differenct features?  In this regard, I focused on one
+variable in each of those 3 categories. 
+
+    + low: I chose alcohol
+    + medium: I chose volatile.acidity
+    + high: I chose residual.sugar
+
+* In the bivariates
+plots' section, I will select additional features, to help support my 
+investigation into color, quality, alcohol, volatile.acidity and 
+residual.sugar.
+
+
+## Did you Create any new Variables From Existing Variables in the Dataset?
+
+In order to be able to extract red and/or white wine data from my
+dataset, I added a feature called color ("red" or "white"") before combining
+the datasets.
+
+When the files were combined, I noticed that the index variable had duplicate 
+values,
+so I added a "row.no.int" variable in case I needed a unique value for
+each row. 
+
+
+## Of the Features you Investigated, Were There any Unusual Distributions? \
+Did you Perform any Operations on the Data to Tidy, Adjust, or Change the Form\
+of the Data? If so, why did you do This?
+
+I chose the red wine and white wine datasets because they were already tidy
+datasets that did not need cleaning. 
+
+The white wine dataset has 3 times as many instances as the red wine 
+dataset, so I will have to make allowance for that in my further 
+analysis.
+
+
+# Bivariate Plots Section
+
+In this section I will use color to differentiate between red and white
+wine to present bivariate plots.
+
+In the beginning, I used the same variables as in the Univariate Plots Section.
+But then expanded the analysis to other variables that were more strongly
+correlated.
+
+* color is included in most of the plots since I am mainly interested
+in the difference between red and white wine.
+
+* key variables
+
+    + quality with color
+  
+    + density of alcohol vs color
+  
+    + density of volatile.acidity vs color
+  
+    + density of residual.sugar vs color
+
+* ratios of max to mean
+
+    + alcohol: low max to mean ratio <2
+
+    + volatile.acidity: medium max to mean ratio 2-5 times
+  
+    + residual.sugar: high max to mean ratio 9+ times           
+
+* correlations
+
+* three variable pairs that are somewhat correlated
+
+    + free.sulfur.dioxide vs total.sulfur.dioxide
+  
+    + alcohol vs density
+  
+    + residual.sugar vs density
+
+* other variables paired up
+
+    + alcohol vs volatile.acidity
+  
+    + log(alcohol) vs log(volatile.acidity)
+  
+    + alcohol vs residual.sugar
+
+* boxplots
+
+    + quality vs alcohol
+
+* boxplots using functions
+
+    + quality vs fixed.acidity
+
+    + quality vs volatile.acidity
+  
+    + quality vs citric.acid
+  
+    + quality vs residual.sugar
+  
+    + quality vs chlorides
+  
+    + quality vs density
+  
+    + quality vs alcohol                                         
+
+
+## Bivariate - Key Variables
+
+* quality vs color
+* alcohol vs color
+* volatile.acidity vs color
+* residual.sugar vs color
+
+
+### Bivariate - key variables - quality vs color
+
+```{r, echo = FALSE}
+# Simple histogram counting quality by color
+# reviewer said better to use bar. I had used this:
+# qplot(quality, data = data, fill = color) 
+ggplot(data = data, aes(x = factor(quality), fill = factor(color))) +
+       geom_bar()+
+       xlab("Wine Quality rating") + ylab("Count") +
+       ggtitle("Bar of Wine Quality")
+```
+
+
+```{r, echo = FALSE}
+# Simple histogram counting quality by color
+# reviewer said better to use position = "dodge" 
+ggplot(data = data, aes(x = factor(quality), fill = factor(color))) +
+       geom_bar(position = "dodge")+
+       xlab("Wine Quality rating") + ylab("Count") +
+       ggtitle("Bar of Wine Quality")
+```
+
+
+These histograms show that each of the red and white wines follow a standard 
+distribution. 
+
+In the second graph, as suggested by the reviewer, I used position = "dodge"
+which is much better to see the red and white wine side by side.
+
+However, I cant see bin 9 very well, 
+so I will use a scale y sqrt in 
+the next histogram; and change the binwidth to 1.
+
+
+```{r, echo = FALSE}
+# Increasing the binwidths, and using scale_y_sqrt
+# reviewer said better to use bar. I had used this:
+# qplot(quality, data = data, fill = color, binwidth = 1)  +
+#  scale_y_sqrt() 
+ggplot(data = data, aes(x = factor(quality), fill = factor(color), 
+                        binwidth = 1)) +
+  scale_y_sqrt() +
+  geom_bar(position = "dodge")+
+  xlab("Wine Quality rating") + ylab("Count") +
+  ggtitle("Bar of Wine Quality")
+```
+
+
+This histogram scales x axis into binwidth of 1. It is not necessary to use 
+scale x continuous because there are 10 distinct measurements of quality
+from 1 to 10. So, the x scale is discrete. 
+
+The sqrt on the y axis makes the graph more compact and easier to see
+the red wine distribution. I can now also see the binwith quality 9.
+
+We can see that both red and white quality follow a standard
+distribution and that levels 5 and 6 are close to being the same,
+as they were in the univariate plot.
+
+
+```{r, echo=FALSE}
+# Creating a density chart of quality by color
+qplot(quality, data = data, binwidth = 1, color = color, geom = "density") +
+  scale_x_continuous(breaks = seq(3, 9, 1))
+```
+
+
+Geom Density is a powerful graph to compare two data sets that have different
+number of instances (rows). 
+
+x represents the coordinates of the points where the density is estimated.
+y represents the estimated density values. These will be non-negative, but 
+can be zero.Density is not frequency, it is a measure of the proportion of
+the number of instances; and therefore standardizes the measurements
+between the two datasets so that they can be compared, regardless of the 
+number of instances in each dataset.
+
+This graph displays the proportion of red wine and white wine at each 
+marker of quality. 
+
+This graph shows that we have almost the same proportion of red and white wines
+with quality of 3, 4 and 9. There is a higher proportion of white wines 
+with quality 6, 7 and 8;
+and a higher proportion of red wines with quality 5. This is interesting. 
+It breaks my mold of
+thinking that red wines almost always have higher quality than white wines.
+
+However, the correlation of quality to color is not significant. Neither
+of the smoothed out histograms are significantly higher between the red
+and white wines.
+
+
+### Bivariate - key variables - density of alcohol vs color
+
+
+```{r, echo=FALSE}
+# Density chart of alcohol by color
+qplot(alcohol, data = data, binwidth = 1, color = color, geom = "density") +
+  scale_x_continuous(breaks = seq(3, 9, 1))
+```
+
+
+This density histogram of alcohol by wine color shows that there is a higher
+proportion of red wine instances at the median of alcohol (10.3). White wine 
+has 
+higher proportion below the 9.5ish  and also at the high alcohol content.
+
+Overall there is not a high correlation of alcohol to color. Both red and 
+white wine graphs have approximately the same shape.
+
+
+### Bivariate - key variables - density of volatile.acidity vs color
+
+
+```{r, echo=FALSE}
+# Density chart of volatile.acidity by color
+qplot(volatile.acidity, data = data, binwidth = 1, color = color, 
+      geom = "density") +
+  scale_x_continuous(breaks = seq(3, 9, 1))
+```
+
+
+This density histogram of volatile.acidity by wine color shows that
+white wine has a much higher proportion of low volatile.acidity and
+red wine has a higher proportion at higher volatile.acidity.
+
+There is a correlation between volatile.acidity and color. It is high, 
+but not exceptionally high.
+
+
+### Bivariate - key variables - density of residual.sugar vs color
+
+
+```{r, echo=FALSE}
+# Density chart of residual.sugar by color
+qplot(residual.sugar, data = data, binwidth = 1, color = color, 
+      geom = "density") +
+  scale_x_continuous(breaks = seq(0, 66, 2))
+```
+
+
+This density histogram of residual.sugar by wine color shows that there is a
+much higher proportion of red wine instances at the median of 
+residual.sugar (3), which is at the low end of the scale, and that
+white wine has more instances almost everywhere except at the median.
+
+However, both graphs are generally the same shape.
+
+
+## Bivariate - Ratios of Max to Mean
+
+Now, I'd like to check some of the variables for which there were low, medium
+and high ratios of Max to Mean, to see if there was an obvious reason 
+for the differences.
+
+I'll use the same variables as I used in the Univariate Plots Section.
+
+- low (less than 2 ratio): I'll use alcohol (ratio of 1.4204)
+
+- medium (from 2 to 5 ratio): I'll use volatile.acidity (ratio of 4.651163) 
+
+- high (9+ ratio): I'll use residual.sugar (ratio of 12.08892)
+
+
+### Bivariate - low max to mean ratio <2 times: alcohol
+
+Since there are many values for alcohol on the x axis, I will use 
+continuous scale, a bins = 30 and Min of 8 / max of 15 in accordance 
+with the summary for alcohol.
+
+There are more bins, so the total count for each bin will easily fit on the 
+histogram, so I do not need to scale y with sqrt.
+
+
+```{r, echo = FALSE}
+# Alcohol count by color with scale_x_continuous
+qplot(alcohol, data = data, fill = color, bins = 30)  +
+  scale_x_continuous(breaks = seq(8,15,.5), lim = c(8, 15))
+
+```
+
+
+The histogram shows that the level of alcohol has a tail to the right
+for both red and white wines. 
+
+The Mean is 10.49 which is
+to the right of the peak of the distribution. 
+
+The second and third
+quartiles range from 9.5 to 11.3 and they are tighly grouped around
+the median and mean which are very close to each other (10.3 and 10.49 
+respectively). This grouping may account for the low ratio of
+Max to Mean.
+
+
+### Bivariate - medium max to mean ratio 2-5 times: volatile.acidity
+
+Since there are many values for volatile.acidity on the x axis with very 
+small numbers, I will use scale_x_log10 and set the min and max
+according the data with an increase of 0.1.
+
+There are more bins, so the total count for each bin will fit easily on the 
+histogram, so I do not need to scale y with sqrt.
+
+
+```{r, echo = FALSE}
+# Volatile.acidity count by color using scale_x_log10
+qplot(volatile.acidity, data = data, fill = color, bins = 600)  +
+  scale_x_log10(breaks = seq(0, 
+                             max(data$volatile.acidity), .2))
+```
+
+
+The Mean (0.3397) of volatile.acidity is to the right of the peak of the 
+distribution (approx 0.28). There are few instances below 0.14 but many 
+instances of high volatile.acidity and the Max goes quite far to the right. 
+
+This may be contributing to the higher ratio of Max to Mean (4.651163).
+
+The red wine surpasses white wine in the frequency of higher 
+volatile.acidity at around 0.48 on the x axis.
+
+
+```{r, echo = FALSE}
+# Adding facet wraps for count histogram and density graph
+qplot(volatile.acidity, data = data, facets = color ~ .,
+geom = "histogram")
+qplot(volatile.acidity, ..density.., data = data, facets = color ~ .,
+geom = "density")
+# Combining density graph into one graph and adding color
+qplot(volatile.acidity, data = data, geom = "density", color = color)
+```
+
+
+These plots show the differences in red wine and white wine volatile.acidity
+in various graph formats.
+
+Putting them on the same layout helps to compare.
+
+The first facets' layout shows a histogram for each of red and white wine.
+Because both histograms have the same y axis, it is clear that white wine
+has higher volume of events with lower volatile.acidity than red wine.
+
+The second facets' layout - geom "density" - smooths out the curve and shows
+them as proportions.
+
+In both facets' layouts it is clear that red wine has more incidents of
+higher volatile.acidity.
+
+The last graph overlays the white and red wine volatile.acidity onto the 
+same graph which makes it even clearer.
+
+
+### Bivariate - high max to mean ratio 9+ times: residual.sugar
+
+
+```{r, echo = FALSE}
+# Count histogram of residual.sugar by color.
+qplot(residual.sugar, data = data, color = color, bins = 500)  +
+  scale_x_log10(breaks = seq(0, 25, 3))
+```
+
+
+Bins = 500, log10, min, max, 0.8, color = color.
+
+The bins and breaks show enough of the scale to discern
+the mean which is 5.443.
+
+There are more values selected at the 
+higher residual.sugar levels (the plot is denser), but the lower residual.sugar 
+levels are selected more often (count is higher).
+
+And there are many peaks and valleys.
+
+
+```{r, echo=FALSE}
+# Density graph. Residual.sugar by color.
+qplot(residual.sugar, data = data, binwidth = 1, color = color, 
+      geom = "density") +
+  scale_x_continuous(breaks = seq(0, 66, 2))
+```
+
+
+This density graph shows that there is a higher proportion red wine events 
+at low residual.sugar levels than white wine.
+
+It also shows that white wine can get quite high in residual.sugar. 
+
+The long tail to the right is probably an outlier that we can also
+see in other graphs.
+
+
+## Bivariate - Correlations
+
+I want to consider other variables and how they are correlated.
+
+
+```{r, echo=TRUE}
+
+# Showing the code for each plot:
+
+# Correlation of all of the features.
+# Playing with various correlation models.
+
+# My original code. Reviewer said to fix it because the
+#labels and correlations are too hard to read:
+
+ggpairs(data)
+
+# Removed variable x to make more room. Did not help much. 
+# cell contents are OK, but not great:
+
+ggpairs(data[,-1]) 
+
+# Font size 6, the cell contents are too big:
+
+ggpairs(data[,-1], 
+        upper = list(continuous = wrap("cor", size = 6))) 
+
+# Font size 2 # the cell contents are too small:
+
+ggpairs(data[,-1], 
+        upper = list(continuous = wrap("cor", size = 2))) 
+
+# Font size 3, the cell contents are just right, but the labels
+# are still cut off:
+
+ggpairs(data[,-1], 
+        upper = list(continuous = wrap("cor", size = 3))) 
+
+# Colored squares using ggcorr instead of ggpairs. 
+# The feature "color" is ignored because 
+# it is non-numeric:
+
+ggcorr(data) 
+
+# Colored squares, removed variable x to make room. But now
+# I cannot read all of "fixed.acidity" on the bottom left:
+
+ggcorr(data[,-1]) 
+
+# Play with which columns to include by putting the range of columns. 
+# This is fixed.acidity to sulphates. Included the correlations #s.
+# The labels run into the variable names:
+
+ggcorr(data[, 2:11], label = TRUE) 
+
+# Labels rounded to 3 decimas and graded font color:
+
+ggcorr(data[, -1], label = TRUE, label_size = 3, label_round = 3, 
+       label_alpha = TRUE) 
+
+# Changed the size, color and position of the labels,
+# added white space on bottom left so that the label 
+# "fixed.acidity" is not cut off. But the labels still
+# run into the squares:
+
+ggcorr(data[, -1], label = TRUE, label_size = 3, label_round = 3, 
+       label_alpha = TRUE, hjust = 0.5, size = 3, color = "grey50", 
+       layout.exp = 1) 
+
+# I am interested in coefficients that are greater than or less than abs 0.5. 
+# This plot allows me to see those at a glance. There aren't many.
+# I put variable x back in.
+# This is my final plot. Easy to read.
+# Thank you to the reviewer for making these suggestions.
+
+ggcorr(data, geom = "blank", label = TRUE, label_size = 3,
+       label_round = 3, hjust = 0.75, layout.exp = 1) +
+  geom_point(size = 10, aes(color = coefficient > 0, 
+                            alpha = abs(coefficient) >= 0.5)) +
+  scale_alpha_manual(values = c("TRUE" = 0.25, "FALSE" = 0)) +
+  guides(color = FALSE, alpha = FALSE) 
+
+```
+
+
+This shows the correlations between all of the variables of the dataset.
+
+* 0.721 free.sulfur.dioxide vs total.sulfur.dioxide is the strongest 
+correlation.
+
+I suppose that makes sense since they are both sulfur.dioxides.
+
+* -0.687 alcohol vs density is the next strongest correlation. Note that this 
+is the density of the wine, not the proportional density graph format.
+
+* 0.553 residual.sugar vs density of the wine is the next.
+
+* the rest of the correlations drop below 0.5.
+
+It is interesting that there are not stronger correlations in the variables
+that are measured when testing the quality of wine.
+
+Even quality is not strongly correlated with any of the variables.
+.444 is the strongest correlation for quality vs alcohol.
+
+The higher the alcohol content, the higher the testers rated it for
+quality. But 0.444 is not a very strong correlation.
+
+
+## Bivariate - Three Variable Pairs That are Somewhat Correlated
+
+* free.sulfur.dioxide vs total.sulfur.dioxide
+
+* alcohol vs density
+
+* residual.sugar vs density
+
+
+### Bivariate - free.sulfur.dioxide vs total.sulfur.dioxide
+
+
+```{r, echo=TRUE}
+# Point plot using two variables:
+qplot(free.sulfur.dioxide, total.sulfur.dioxide, data = data)
+
+# Add smoothing effect:
+qplot(free.sulfur.dioxide, total.sulfur.dioxide, data = data, 
+      geom = c("point", "smooth"))
+
+# As requested by the reviewer: Add alpha:
+qplot(free.sulfur.dioxide, total.sulfur.dioxide, data = data, 
+      alpha = I(.05), 
+      geom = c("point", "smooth"))
+
+# As requested by the reviewer, 
+# put a limit on the x and y axes. Add a regression line:
+ggplot(data, aes(free.sulfur.dioxide, total.sulfur.dioxide)) +
+  geom_point(alpha = 1/30, position = position_jitter(h = 0), size = 2) +
+    geom_smooth(size=1, method = "lm") +
+    scale_x_continuous(breaks = seq(0,150,25), 
+                       lim = c(0,150)) + 
+    scale_y_continuous(breaks = seq(0,350,50), 
+                       lim = c(0,350)) +
+    coord_cartesian(xlim = c(0,150), ylim = c(0,350))
+```
+
+
+Each graph above builds upon the one before.
+
+- point plot using 2 variables
+- add smoothing effect
+- add alpha
+- put limits on x and y axes and add a regression line
+
+This is the highest correlated pair of variables:
+0.721 free.sulfur.dioxide vs total.sulfur.dioxide.
+
+The first graph is without the smooth effect.
+
+In the second graph, I added "smooth" to show the trend.
+
+
+### Bivariate - alcohol vs density
+
+
+```{r, echo=FALSE}
+# Same for 2 other variables.
+
+qplot(alcohol, density, data = data,  
+      alpha = I(.05), 
+      geom = c("point", "smooth"))
+
+ggplot(data, aes(alcohol, density)) +
+  geom_point(alpha = 1/30, position = position_jitter(h = 0), size = 2) +
+    geom_smooth(size=1, method = "lm") +
+        scale_y_continuous(breaks = seq(.98,1.01,.01), 
+                       lim = c(.98,1.01)) +
+    coord_cartesian(xlim = c(7,15), ylim = c(.98,1.01))
+```
+
+
+This is the second highest correlated pair of variables:
+0.687 alcohol vs density.
+
+As the volume of alcohol increases, the density decreases.
+
+The first graph shows the trend with the smooth effect.
+
+The second graph shows the regression line.
+
+
+### Bivariate - residual.sugar vs density
+
+
+```{r, echo=FALSE}
+# Same for 2 other variables.
+
+qplot(residual.sugar, density, data = data,  
+      alpha = I(.05), 
+      geom = c("point", "smooth"))
+
+ggplot(data, aes(residual.sugar, density)) +
+  geom_point(alpha = 1/30, position = position_jitter(h = 0), size = 2) +
+    geom_smooth(size=1, method = "lm") +
+        scale_x_continuous(breaks = seq(0,25,5), 
+                       lim = c(0,25)) +
+  scale_y_continuous(breaks = seq(.98,1.01,.01), 
+                       lim = c(.98,1.01)) +
+    coord_cartesian(xlim = c(0,25), ylim = c(.98,1.01))
+```
+
+
+This is the third highest correlated pair of variables:
+0.553 residual.sugar vs density.
+
+As residual.sugar goes up, the wines become denser.
+
+The first graph shows the trend with the smooth effect.
+
+The second graph shows the regression line.
+
+
+## Bivariate - Other Variables Paired Up
+
+* alcohol vs volatile.acidity
+
+* log(alcohol) vs log(volatile.acidity)
+
+* alcohol vs residual.sugar
+
+
+### Bivariate - alcohol vs volatile. acidity.
+
+
+```{r, echo=FALSE}
+# Same for 2 other variables.
+qplot(alcohol, volatile.acidity, data = data)
+qplot(alcohol, volatile.acidity, data = data, geom = c("point", "smooth"))
+
+```
+
+
+```{r, echo=FALSE}
+# Same for 2 other variables.
+
+qplot(alcohol, volatile.acidity, data = data,  
+      alpha = I(.05), 
+      geom = c("point", "smooth"))
+
+ggplot(data, aes(alcohol, volatile.acidity)) +
+  geom_point(alpha = 1/15, position = position_jitter(h = 0), size = 2) +
+    geom_smooth(size=1, method = "lm") 
+```
+
+
+The correlation of alcohol vs volatile.acidity is low.
+
+
+### Bivariate - log(alcohol) vs log(volatile.acidity)
+
+
+```{r, echo=FALSE}
+# adding (log) to the variables.
+qplot(log(alcohol), log(volatile.acidity), data = data,  
+      alpha = I(.05),  
+      geom = c("point", "smooth"))
+
+ggplot(data, aes(log(alcohol), log(volatile.acidity))) +
+  geom_point(alpha = 1/15, position = position_jitter(h = 0), size = 2) +
+    geom_smooth(size=1, method = "lm") 
+```
+
+Using "log" for log(alcohol) vs log(volatile.acidity) spreads out the points
+and pulls in the outliers, but the correlation is still low.
+
+
+### Bivariate - alcohol vs residual.sugar
+
+```{r, echo=FALSE}
+qplot(alcohol, residual.sugar, data = data, alpha = I(.1), 
+      geom = c("point", "smooth"))
+
+ggplot(data, aes(alcohol, residual.sugar)) +
+  geom_point(alpha = 0.1, position = position_jitter(h = 0), size = 1) +
+    geom_smooth(size=1, method = "lm", se = FALSE) +
+  scale_y_continuous(breaks = seq(0,35,5), 
+                       lim = c(0,35)) +
+    coord_cartesian(xlim = c(8,15), ylim = c(0,35))
+```
+
+
+In the alcohol vs residual.sugar graph, as alcohol increases, residual.sugar 
+decreases. The correlation is strong when alcohol is between 8 and 10%,
+but the correlation is very weak after alcohol content reaches
+10% and higher.
+
+The first graph has smooth line and alpha of 0.1,
+The second graph has alpha of 1/15, limits on the x and y axes
+and a regression line.
+
+The smoothing and regression line were added so that we can better see the 
+trend.
+
+
+## Bivariate - Boxplots
+
+* quality vs alcohol
+
+
+### Bivariate - boxplot - quality vs alcohol
+
+
+```{r, echo = FALSE}
+# Adding a new variable to store the plot information so that it can be 
+# added to in future plots.
+# Using ggplot.
+p10 <- ggplot(data, aes(x = as.factor(quality), y = alcohol)) +
+        geom_boxplot()
+p10
+```
+
+
+```{r, echo = FALSE}
+# Adding scale_x and scale_y with labels
+p10 <- p10 + scale_x_discrete(name = "Quality") +
+        scale_y_continuous(name = "Alcohol %")
+p10
+```
+
+
+```{r, echo = FALSE}
+# Adding limits and additional ticks on the Y axis.
+p10 <- p10 + scale_y_continuous(name = "% alcohol content\nof the wine",
+                              breaks = seq(8, 15, 1),
+                              limits=c(8, 15))
+p10
+```
+
+
+```{r, echo = FALSE}
+# Adding a title.
+p10 <- p10 + ggtitle("Boxplot of Mean and quartile % alcohol by quality")
+p10
+```
+
+
+```{r, echo=FALSE}
+# Adding variables to save colors
+fill <- "gold1"
+line <- "goldenrod2"
+```
+
+
+```{r, echo = FALSE}
+# Using the fill and line variable to color the boxes.
+# Changing the outlier shapes. Adding outlier color. Adding a notch in the box.
+p11 <- ggplot(data, aes(x = as.factor(quality), y = alcohol)) +
+        geom_boxplot(fill = fill, colour = line,  alpha = 0.7,
+                     outlier.colour = "#1F3552", outlier.shape = 20, 
+                     notch = TRUE) +
+  scale_x_discrete(name = "Quality") + 
+        scale_y_continuous(name = "% Alcohol content\nof the wine",
+                           breaks = seq(8, 15, 1),
+                           limits=c(8,15)) +
+        ggtitle("Boxplot of Mean and Quartiles - % Alcohol by Quality")
+p11
+```
+
+
+```{r, echo=FALSE}
+# Adding black and white theme.
+p11 <- p11 + theme_bw()
+p11
+```
+
+
+The code for each of the above graphs builds on the code from the previous 
+graph: adding main title, y axis title, color, indentation in the box for
+mean, detailed y ticks and a background theme.
+
+The final graph is the combined code.
+
+The graph shows that as alcohol increases, the quality increases.
+
+Quality 5 seems to be the exception, it may be because of all of the
+outliers of high alcohol content that pulls up the quality, even though
+the mean is lower than qualities 3 and 4.
+
+
+## Bivariate - Boxplots using markers to show the mean values and jitter plot
+
+The reviewer suggested that adding markers to show the mean values and jitter 
+plot will make the figure more informative.
+
+
+```{r, echo = FALSE}
+
+ggplot(aes(factor(quality), 
+            alcohol), 
+        data = data) +
+  geom_jitter( alpha = .3)  +
+  geom_boxplot( alpha = .5,color = 'blue')+
+  stat_summary(fun.y = "mean", 
+               geom = "point", 
+               color = "red", 
+               shape = 8, 
+               size = 4)
+
+```
+
+
+This boxplot includes a jitter plot and has markers to show the mean values.
+
+It makes the plot a lot more informative.
+
+In the next section, I will be using functions to simplify creating plots.
+
+The beauty is that I only have to change the base function to add
+the jitter plot and the markers to show the mean values, and
+all of the subsequent plots will include them.
+
+
+## Bivariate - Boxplots Using Functions
+
+I want to use a function to simplify creating boxplots for a number of 
+variables:
+
+* quality vs fixed.acidity
+
+* quality vs volatile.acidity
+
+* quality vs citric.acid
+
+* quality vs residual.sugar
+
+* quality vs chlorides
+
+* quality vs density
+
+* quality vs alcohol
+
+
+```{r, echo = TRUE}
+# Here is my code for adding a repetitive function.
+#
+# I set echo = TRUE so my code would display when "knit".
+#
+# I remove notch = TRUE because a notch is outside the box.
+#
+# I Changed colors. 
+#
+# I added variable names for the function to use.
+
+bpfill="#00FF00"
+bpline="#006400"
+
+
+f1 <- function(dataset, x, y, xname, yname, bptitle, opts = NULL) {
+ggplot(dataset, aes_string(x = x, y = y)) +
+    geom_jitter( alpha = .3)  +
+    geom_boxplot(fill = bpfill, colour = bpline,  alpha = 0.7,
+                     outlier.colour = "#1F3552", outlier.shape = 20) +
+        scale_x_discrete(name = xname) + 
+    scale_y_continuous(name = yname) +
+        ggtitle(bptitle) +
+    stat_summary(fun.y = "mean", 
+               geom = "point", 
+               color = "red", 
+               shape = 8, 
+               size = 4) +
+    theme_bw()
+}
+
+# Adding values to some variable names for all of the boxplots by quality:
+
+bpx = "as.factor(quality)"
+bpxname = "Quality"
+bptitle = "Boxplot of Mean and Quartiles -"
+```
+
+
+### Bivariate - boxplots using functions - quality vs fixed.acidity
+
+
+```{r, echo=FALSE}
+# Fixed Acidity vs Quality
+# Adding the variable name to the title
+
+bpy = "fixed.acidity"
+bpyname = "Fixed Acidity"
+vbptitle <- paste(bptitle, bpxname, "by", bpyname, sep = " ")
+
+p20<-f1(data, bpx, bpy, bpxname, bpyname, vbptitle)
+
+p20
+```
+
+
+There are quite a few outliers in the qualities 5, 6 and 7.
+
+fixed.acidity vs quality: Overall, quality does not have a strong correlation 
+with fixed.acidity.
+
+
+### Bivariate - boxplots using functions - quality vs volatile.acidity
+
+
+```{r, echo=FALSE}
+# Volatile Acidity vs Quality.
+# Using the function.
+# Changing variable name values.
+
+bpy = "volatile.acidity"
+bpyname = "Volatile Acidity"
+vbptitle <- paste(bptitle,  bpxname, "by", bpyname, sep = " ")
+
+p21<-f1(data, bpx, bpy, bpxname, bpyname, vbptitle)
+
+p21
+```
+
+
+There are quite a few outliers in the qualities 5, 6 and 7.
+
+volatile.acidity vs quality: There is a wider
+range of volatile.acidity measurements in the lower qualities. 
+The mean quality goes down as the volatile.acidity goes down, but not
+significantly.
+
+
+### Bivariate - boxplots using functions - quality vs citric.acid
+
+
+```{r, echo=FALSE}
+# Citric Acid vs Quality
+# Try without p## (e.g. without p21). That works.
+
+bpy = "citric.acid"
+bpyname = "Citric Acid"
+vbptitle <- paste(bptitle,  bpxname, "by", bpyname, sep = " ")
+
+f1(data, bpx, bpy, bpxname, bpyname, vbptitle)
+```
+
+
+There are quite a few outliers in the qualities 5, 6 and 7.
+
+citric.acid vs quality: There is no strong 
+difference in the means. quality #4 has wider quartiles, showing that the
+events have greated range of citric.acid to quality 4.
+
+
+### Bivariate - boxplots using functions - quality vs residual.sugar
+
+
+```{r, echo=FALSE}
+# Using the function with new variable values.
+bpy = "residual.sugar"
+bpyname = "Residual Sugar"
+vbptitle <- paste(bptitle,  bpxname, "by", bpyname, sep = " ")
+
+f1(data, bpx, bpy, bpxname, bpyname, vbptitle)
+```
+
+
+There is one outlier at quality 6 that stretches the y scale up above 60.
+
+residual.sugar vs quality: The means do not vary significantly although the
+mean of residual.sugar at quality 8 is higher than the means at the other 
+measures of quality.
+
+There is a higher range of instances in the 3rd quartile for qualities 5 and 6. 
+
+
+### Bivariate - boxplots using functions - quality vs chlorides
+
+
+```{r, echo=FALSE}
+# Using the function with new variable values.
+bpy = "chlorides"
+bpyname = "Chlorides"
+vbptitle <- paste(bptitle,  bpxname, "by", bpyname, sep = " ")
+
+f1(data, bpx, bpy, bpxname, bpyname, vbptitle)
+```
+
+
+There are many many outliers in chlorides vs quality, escpecially at quality
+levels of 5, 6 and 7. 
+
+chlorides vs quality: The means of chlorides are very close at all levels
+of quality, and the ranges between the quartiles are not very wide.
+
+There is low correlation between chlorides and quality.
+
+
+### Bivariate - boxplots using functions - quality vs density
+
+
+```{r, echo=FALSE}
+# Using the function with new variable values.
+bpy = "density"
+bpyname = "Density"
+vbptitle <- paste(bptitle,  bpxname, "by", bpyname, sep = " ")
+
+f1(data, bpx, bpy, bpxname, bpyname, vbptitle)
+```
+
+
+There are few outliers for quality vs density. There is still that one
+outlier at quality of 6 that is stretching the density y axis.
+
+Note that this is the density of the wine, not the geom(density) graph that
+depicts the proportion between the variables.
+
+density vs quality: As density goes down, the quality goes down. However, the
+relationship is not strongly correlated. 
+
+qualities 6 and 7 seem to have the same number of instances, 
+the boxes appear to be somewhat the same size. quality boxes 3, 4, 5 and 8
+are smaller. Box 9 is tiny in comparison, showing very few instances where
+the judges rated the wine very high.
+
+
+### Bivariate - boxplots using functions - quality vs alcohol
+
+
+```{r, echo=FALSE}
+# Using the function with new variable values.
+bpy = "alcohol"
+bpyname = "Alcohol"
+vbptitle <- paste(bptitle,  bpxname, "by", bpyname, sep = " ")
+
+f1(data, bpx, bpy, bpxname, bpyname, vbptitle)
+```
+
+
+There are many outliers at quality 5 which may account for the lower mean and 
+smaller box. Only quality 9 has an overall smaller box.
+
+alcohol vs quality: alcohol and quality are somewhat correlated. 
+As alcohol goes up, the quality
+of the wine goes up. 
+
+
+# Bivariate Analysis
+
+
+## Talk About Some of the Relationships you Observed in this Part of the \
+Investigation. How did the Feature(s) of Interest Vary With Other Features in \
+the Dataset?
+
+Red and white wine follow a similar standard distribution of quality,
+with qualities 5 and 6 being the highest.
+
+alcohol also follows a similar distribution for both red and white wines.
+
+volatile.acidity however is quite different for red and white wines. There
+is a higher proportion of volatile.acidity in red wine than in white wine.
+
+residual.sugar follows a similar graph shape for both red and white wine,
+but there is a higher 
+proportion of white wine instances that have higher residual.sugar than
+red wine.
+
+The quality of the wine was positively correlated (0.444) with the alcohol 
+content
+in the wine.
+
+
+## Did you observe any interesting relationships between the other features \
+(not the main feature(s) of interest)?
+
+The features in the wine dataset are not highly correlated overall.
+There are only 3 correlations that are above 0.5:
+
+* 0.721 free.sulfur.dioxide vs total.sulfur.dioxide is the strongest 
+correlation.
+I suppose that makes sense since they are both sulfur.dioxides.
+
+* 0.687 alcohol vs density of the wine is the next strongest correlation. 
+
+* 0.553 residual.sugar vs density of the wine is the next highest.
+
+* The rest of the correlations drop below 0.5. 
+
+
+## What was the Strongest Relationship you Found?
+
+* 0.721 free.sulfur.dioxide vs total.sulfur.dioxide is the strongest 
+correlation.
+I suppose that makes sense since they are both sulfur.dioxides.
+
+
+# Multivariate Plots Section
+
+I'm using functions in this section for quicker code.
+
+I'm including Linear Modelling (LM).
+
+I've added cartesian coordinates to remove the outliers.
+
+I've added red and white wine color.
+
+I'll compare some graphs with and without scale_x_log10.
+
+I'll facet wrap 2 variables by color and add legend by quality.
+
+
+## Multivariate - Three Variable Pairs That are Somewhat Correlated
+
+* free.sulfur.dioxide vs total.sulfur.dioxide
+
+* alcohol vs density
+
+* residual.sugar vs density
+
+I'm using functions and linear modelling (LM) in this section.
+
+
+```{r, echo = FALSE}
+# Created new function to add linear modelling, position jitter, smoothing,
+# limits, start, max and increments on axes.
+f30 <- function(dataset, x, y, z, xname, yname, ctitle, opts = NULL) {
+ggplot(dataset, aes_string(x=x, y=y, color = z)) +
+  geom_point(alpha = 1/30, position = position_jitter(h = 0), size = 2) +
+    geom_smooth(size=1, method = "lm") +
+    scale_x_continuous(name = xname, breaks = seq(xstart,xmax,xincr), 
+                       lim = c(xstart,xmax)) + 
+    scale_y_continuous(name = cyname, breaks = seq(ystart,ymax,yincr), 
+                       lim = c(ystart,ymax)) +
+    ggtitle(ctitle) +
+    coord_cartesian(xlim = c(xmin,xmax), ylim = c(ymin, ymax)) +
+    theme_bw()
+}
+```
+
+
+### Multivariate - a pair that is somewhat correlated: \
+free.sulfur.dioxide vs total.sulfur.dioxide
+
+
+```{r, echo=FALSE}
+# Using the function with variable values.
+cx = "free.sulfur.dioxide"
+cxname = "Free Sulfur Dioxide"
+cy = "total.sulfur.dioxide"
+cyname = "Total Sulfur Dioxide"
+cz = "color"
+ctitle = "Comparison by color -"
+vctitle <- paste(ctitle, cxname, "by", cyname, sep = " ")
+xstart=0
+xmin=1
+xmax=110
+xincr=10
+ystart=0
+ymin=6
+ymax=280
+yincr=10
+
+f30(data, cx, cy, cz, cxname, cyname, vctitle)
+```
+
+
+For both red and white wine, as total.sulfur.dioxide goes up, 
+free.sulfur.dioxide also goes up. This is the highest correlated pair.
+
+
+### Multivariate - a pair that is somewhat correlated: \
+alcohol vs density
+
+
+```{r, echo=FALSE}
+# Using the function with new variable values.
+cx = "alcohol"
+cxname = "Alcohol"
+cy = "density"
+cyname = "Density of the Wine"
+cz = "color"
+ctitle = "Comparison by color -"
+vctitle <- paste(ctitle, cxname, "by", cyname, sep = " ")
+xstart=7
+xmin=7
+xmax=15
+xincr=1
+ystart=0.985
+ymin=0.985
+ymax=1.005
+yincr=.005
+
+f30(data, cx, cy, cz, cxname, cyname, vctitle)
+```
+
+
+As the alcohol content of each of red and white wine goes up,
+the density of the wine goes down. 
+
+This negative correlation is stronger in white wine than it is in red wine.
+
+
+### Multivariate - a pair that is somewhat correlated: \
+residual.sugar vs density
+
+
+```{r, echo=FALSE}
+# Using the function with new variable values.
+cx = "residual.sugar"
+cxname = "Residual Sugar"
+cy = "density"
+cyname = "Density of the Wine"
+cz = "color"
+ctitle = "Comparison by color -"
+vctitle <- paste(ctitle, cxname, "by", cyname, sep = " ")
+xstart=0
+xmin=0
+xmax=27
+xincr=1
+ystart=0.985
+ymin=0.985
+ymax=1.005
+yincr=.005
+
+f30(data, cx, cy, cz, cxname, cyname, vctitle)
+```
+
+
+As the residual.sugar content of each of red and white wine goes up,
+the density of the wine also goes up. 
+
+This positive correlation is about the same for both red and white wines.
+
+
+## Multivariate - Other Variables Paired up
+
+* alcohol vs volatile.acidity
+
+* alcohol vs residual.sugar
+
+* quality vs alcohol
+
+I'm adding comparison chart using scale_x_log10 in this section.
+
+
+### Multivariate - other pair: alcohol vs volatile.acidity
+
+
+```{r, echo=FALSE}
+# Using the function with new variable values.
+# Created two plots, the second with log10.
+cx = "alcohol"
+cxname = "Alcohol"
+cy = "volatile.acidity"
+cyname = "Volatile Acidity"
+cz = "color"
+ctitle = "Comparison by color -"
+vctitle <- paste(ctitle, cxname, "by", cyname, sep = " ")
+vclogtitle <- paste(vctitle, "- using xlog10")
+xstart=7
+xmin=7
+xmax=15
+xincr=1
+ystart=0.07
+ymin=0.07
+ymax=1.58
+yincr=.1
+p31<-f30(data, cx, cy, cz, cxname, cyname, vctitle)
+p32<-f30(data, cx, cy, cz, cxname, cyname, vclogtitle) + scale_x_log10() 
+p31
+p32
+```
+
+
+Using linear modelling, these graphs compare alcohol vs volatile.acidity. 
+The bottom graph uses log10
+but it does not make a significant difference to the overall appearance
+of the graph.
+
+The correlation of alcohol vs volatile. acidity is positive but very low for 
+white wine; and negative and still low for red wine.
+
+
+### Multivariate - other pair: alcohol vs residual.sugar
+
+
+```{r, echo=FALSE}
+# Two plots again. Using the function with new variable values.
+cx = "alcohol"
+cxname = "Alcohol"
+cy = "residual.sugar"
+cyname = "Residual Sugar"
+cz = "color"
+ctitle = "Comparison by color -"
+vctitle <- paste(ctitle, cxname, "by", cyname, sep = " ")
+vclogtitle <- paste(vctitle, "- using xlog10")
+xstart=7
+xmin=7
+xmax=15
+xincr=1
+ystart=.5
+ymin=.5
+ymax=27
+yincr=.5
+p31<-f30(data, cx, cy, cz, cxname, cyname, vctitle)
+p32<-f30(data, cx, cy, cz, cxname, cyname, vclogtitle) + scale_x_log10()  
+p31
+p32
+```
+
+
+Using linear modelling, these graphs show the correlation between alcohol
+and residual.sugar. 
+
+There is a significance difference between red and white wines.
+
+For red wine, as alcohol increases, residual.sugar 
+increases slightly, but the correlation is not strong.
+
+However for white wine, there is a significant negative correlation between
+alcohol and residual.sugar. As alcohol increases, residual.sugar decreases
+substantially.
+
+
+### Multivariate - other pair: quality vs alcohol
+
+
+```{r, echo=FALSE}
+# Two plots again. Using the function with new variable values.
+cx = "quality"
+cxname = "Quality"
+cy = "alcohol"
+cyname = "Alcohol"
+cz = "color"
+ctitle = "Comparison by color -"
+vctitle <- paste(ctitle, cxname, "by", cyname, sep = " ")
+vclogtitle <- paste(vctitle, "- using xlog10")
+xstart=2
+xmin=2
+xmax=10
+xincr=1
+ystart=7
+ymin=7
+ymax=15
+yincr=1
+p31<-f30(data, cx, cy, cz, cxname, cyname, vctitle)
+p32<-f30(data, cx, cy, cz, cxname, cyname, vclogtitle) + scale_x_log10()  
+p31
+p32
+```
+
+
+```{r, echo=FALSE}
+ggplot(aes(factor(quality), 
+            alcohol, fill = color), 
+        data =  data) +
+   geom_boxplot( alpha = .5,color = 'blue')
+```
+
+
+Using linear modelling, these graphs show the correlation between quality and
+alcohol for each of red and white wines.
+
+For both red and white wines, as the quality goes up, the alcohol 
+content also goes 
+up. The red and white wine lines are almost identical. 
+
+The log10 did not help to differentiate.
+
+The reviewer suggested using the box plot to differentiate. And it helped
+a lot.
+
+
+### Multivariate - other pair - with facet wrap: quality vs alcohol
+
+I'm adding facet wrap
+
+
+```{r, echo = FALSE}
+# New function adding facet wrap.
+f40 <- function(dataset, x, y, z, xname, yname, ctitle, opts = NULL) {
+ggplot(dataset, aes_string(x=x, y=y, color = z)) +
+  geom_point(alpha = 1/30, position = position_jitter(h = 0), size = 4) +
+    geom_smooth(size=1, method = "lm") +
+    scale_x_continuous(name = cxname, breaks = seq(xstart,xmax,xincr), 
+                       lim = c(xstart,xmax)) + 
+    scale_y_continuous(name = cyname, breaks = seq(ystart,ymax,yincr), 
+                       lim = c(ystart,ymax)) +
+    ggtitle(ctitle) +
+    coord_cartesian(xlim = c(xmin,xmax), ylim = c(ymin, ymax)) +
+    theme_bw() +
+    facet_wrap(~color)
+}
+```
+
+
+```{r, echo=FALSE}
+# Using the function with new variable values.
+cx = "quality"
+cxname = "Quality"
+cy = "alcohol"
+cyname = "Alcohol"
+cz = "color"
+ctitle = "Comparison by color -"
+vctitle <- paste(ctitle, cxname, "by", cyname, sep = " ")
+xstart=2
+xmin=2
+xmax=10
+xincr=1
+ystart=7
+ymin=7
+ymax=15
+yincr=1
+p41<-f40(data, cx, cy, cz, cxname, cyname, vctitle)
+p41
+```
+
+
+These graph show the comparison quality vs alcohol for each of red 
+and white wine side by side in 
+a facet wrap.
+
+I repeated the quality vs alcohol because alcohol seems to be the only
+variable that correlates with quality.
+
+
+### Multivariate - other pair - with facet wrap: quality vs fixed.acidity
+
+
+```{r, echo=FALSE}
+# Using the function with new variable values.
+cx = "quality"
+cxname = "Quality"
+cy = "fixed.acidity"
+cyname = "Fixed Acidity"
+cz = "color"
+ctitle = "Comparison by color -"
+vctitle <- paste(ctitle, cxname, "by", cyname, sep = " ")
+xstart=2
+xmin=2
+xmax=10
+xincr=1
+ystart=3
+ymin=3
+ymax=16
+yincr=1
+p41<-f40(data, cx, cy, cz, cxname, cyname, vctitle)
+p41
+```
+
+
+These graph show the comparison of quality vs fixed.acidity for each of red 
+and white wine side by side in 
+a facet wrap.
+
+For red wine, as the fixed.acidity goes up, the quality also goes up, but there
+is not a strong correlation.
+
+On the other hand, for white wine, as the fixed.acidity goes up, 
+the quality goes down, but once
+again there is not a strong correlation.
+
+
+### Multivariate - other pair - with facet wrap: quality vs volatile.acidity
+
+
+```{r, echo=FALSE}
+# Using the function with new variable values.
+cx = "quality"
+cxname = "Quality"
+cy = "volatile.acidity"
+cyname = "Volatile Acidity"
+cz = "color"
+ctitle = "Comparison by color -"
+vctitle <- paste(ctitle, cxname, "by", cyname, sep = " ")
+xstart=2
+xmin=2
+xmax=10
+xincr=1
+ystart=-0.1
+ymin=-0.1
+ymax=1.2
+yincr=0.1
+p41<-f40(data, cx, cy, cz, cxname, cyname, vctitle)
+p41
+```
+
+
+These graph show the comparison of quality vs volatile.acidity for each of red 
+and white wine side by side in 
+a facet wrap.
+
+For both red and white wine, as the volatile.acidity goes down, the quality 
+goes up. The correlation is much stronger for red wine than it is 
+for white wine.
+
+
+### Multivariate - other pair - with facet wrap: quality vs citric.acid
+
+
+```{r, echo=FALSE}
+# Using the function with new variable values.
+cx = "quality"
+cxname = "Quality"
+cy = "citric.acid"
+cyname = "Citric Acid"
+cz = "color"
+ctitle = "Comparison by color -"
+vctitle <- paste(ctitle, cxname, "by", cyname, sep = " ")
+xstart=2
+xmin=2
+xmax=10
+xincr=1
+ystart=-.1
+ymin=-.1
+ymax=1
+yincr=0.1
+p41<-f40(data, cx, cy, cz, cxname, cyname, vctitle)
+p41
+```
+
+
+These graph show the comparison of quality vs citric.acid for each of red 
+and white wine side by side in 
+a facet wrap.
+
+For red wine, as the citric.acid goes up, the quality also goes up, there is 
+a positive correlation of 0.226.
+
+On the other hand, for white wine, the correlation line is almost flat, 
+indicating no correlation at all between citric.acid and quality.
+
+
+### Multivariate - other pair - with facet wrap: quality vs residual.sugar
+
+
+```{r, echo=FALSE}
+# Using the function with new variable values.
+cx = "quality"
+cxname = "Quality"
+cy = "residual.sugar"
+cyname = "Residual Sugar"
+cz = "color"
+ctitle = "Comparison by color -"
+vctitle <- paste(ctitle, cxname, "by", cyname, sep = " ")
+xstart=2
+xmin=2
+xmax=10
+xincr=1
+ystart=-1
+ymin=-1
+ymax=25
+yincr=1
+p41<-f40(data, cx, cy, cz, cxname, cyname, vctitle)
+p41
+```
+
+
+These graph show the comparison of quality vs residual.sugar for each of red 
+and white wine side by side in 
+a facet wrap.
+
+For red wine, the correlation is almost flat, indicating almost no
+relationship between residual.sugar and quality.
+
+For white wine, as the quality goes up as the residual.sugar levels go down
+somewhat.
+
+
+## Multivariate - Introducing Two Variables, with Quality as the Legend, \
+Color as the Facet Wrap and Quantiles as the Measurement.
+
+Quantile-quantile plots allow us to compare the
+quantiles of two sets of numbers.
+
+This kind of comparison is much more detailed than a
+simple comparison of means or medians.
+
+By producing quantile plots on the same scale we are able to
+make direct comparisons of:
+
+- medians
+
+- quartiles
+
+- inter-quartile ranges
+
+The following variables will be plotted:
+
+* chlorides vs sulphates
+
+* three pairs somewhat correlated:
+
+    + free.sulfur.dioxide vs total.sulfur.dioxide
+
+    + alcohol vs density
+
+    + residual.sugar vs density
+
+
+
+```{r, echo = FALSE}
+# New function for quantile-quantile graph
+f50 <- function(dataset, x, y, z, cxname, cyname, ctitle, opts = NULL) {
+ggplot(dataset, aes_string(x=x, y=y, color=z)) +
+  facet_wrap(~color) +
+  geom_point(alpha = 1/4, size = 3) +
+  scale_color_identity(guide = 'legend') +
+  ggtitle(ctitle) +
+  labs(color="Quality")
+}
+cz = "as.factor(quality)"
+ctitle = "Quantile Comparison by Wine Color and Quality - \n"
+```
+
+
+### Multivariate quantiles - chlorides vs sulphates
+
+
+```{r, echo=FALSE}
+# Using the function with new variable values.
+cx = "chlorides"
+cxname = "Chlorides"
+cy = "sulphates"
+cyname = "Sulphates"
+vctitle <- paste(ctitle, cxname, "by", cyname, sep = " ")
+f50(data, cx, cy, cz, cxname, cyname, vctitle) +
+  xlim(min(data$chlorides), quantile(data$chlorides, 0.95)) +
+  ylim(min(data$sulphates), quantile(data$sulphates, 0.95))
+```
+
+
+The above is displaying the quantiles of 
+
+* chlorides and sulfates
+
+* showing the quality for each incident
+
+* for each of red and white wines
+
+These colors are pretty, but as the reviewer said, "As quality has orders 
+(quality 8 > 7 or 9 > 8), 
+it is always a good practice to choose a sequential colour palette."
+
+So, lets try again:
+
+
+```{r, echo = FALSE}
+# New function for quantile-quantile graph
+f50 <- function(dataset, x, y, z, cxname, cyname, ctitle, opts = NULL) {
+ggplot(dataset, aes_string(x=x, y=y, color=z)) +
+  facet_wrap(~color) +
+  geom_point(alpha = 1/4, size = 3) +
+  scale_color_identity(guide = 'legend') +
+  ggtitle(ctitle) +
+  labs(color="Quality") +
+  scale_color_brewer(type='seq')
+}
+cz = "as.factor(quality)"
+ctitle = "Quantile Comparison by Wine Color and Quality - \n"
+```
+
+
+```{r, echo=FALSE}
+# Using the function with new variable values.
+cx = "chlorides"
+cxname = "Chlorides"
+cy = "sulphates"
+cyname = "Sulphates"
+vctitle <- paste(ctitle, cxname, "by", cyname, sep = " ")
+f50(data, cx, cy, cz, cxname, cyname, vctitle) +
+  xlim(min(data$chlorides), quantile(data$chlorides, 0.95)) +
+  ylim(min(data$sulphates), quantile(data$sulphates, 0.95))
+```
+
+
+The above is displaying the quantiles of 
+
+* chlorides and sulfates
+
+* showing the quality for each incident
+
+* for each of red and white wines
+
+The spread of the sulphate values in white wine is larger than
+the spread in red wine.
+
+In red wine, as the sulphates and chlorides increase - greater than 50%,
+the quality increases.
+
+In white wine, the quality is definitely higher when the
+chlorides are less than 50%, and mostly higher when the sulphates are less
+than 50%, although there is evidence of good quality at the higher sulphates 
+as well.
+
+
+### Multivariate quantiles - Three pairs somewhat correlated
+
+* free.sulfur.dioxide vs total.sulfur.dioxide
+
+* alcohol vs density
+
+* residual.sugar vs density
+
+
+#### Multivariate quantiles - a pair that is somewhat correlated - \
+free.sulfur.dioxide vs total.sulfur.dioxide
+
+
+```{r, echo=FALSE}
+# Using the function with new variable values.
+cx = "free.sulfur.dioxide"
+cxname = "Free Sulfur Dioxide"
+cy = "total.sulfur.dioxide"
+cyname = "Total Sulfur Dioxide"
+vctitle <- paste(ctitle, cxname, "by", cyname, sep = " ")
+f50(data, cx, cy, cz, cxname, cyname, vctitle) +
+  xlim(min(data$free.sulfur.dioxide), 
+       quantile(data$free.sulfur.dioxide, 0.95)) +
+  ylim(min(data$total.sulfur.dioxide), 
+       quantile(data$total.sulfur.dioxide, 0.95))
+```
+
+
+The above is displaying the quantiles of 
+
+* free.sulfur.dioxide and total.sulfur.dioxide
+
+* showing the quality for each incident
+
+* for each of red and white wines
+
+
+The spread of the free.sulfur.dioxide and total.sulfur.dioxide values in 
+white wine is larger than
+the spread in red wine.
+
+In red wine, as the free.sulfur.dioxide and total.sulfur.dioxide increase,
+the quality of the red wine decreases sigmificantly.
+
+In white wine, the best quality wine is when free.sulfur.dioxide and 
+total.sulfur.dioxide are in the mid range. The higher the total.sulfur.dioxide,
+the lower the quality. 
+
+
+#### Multivariate quantiles - a pair that is somewhat correlated: \
+alcohol vs density
+
+
+```{r, echo=FALSE}
+# Using the function with new variable values.
+cx = "alcohol"
+cxname = "Alcohol"
+cy = "density"
+cyname = "Density of the Wine"
+vctitle <- paste(ctitle, cxname, "by", cyname, sep = " ")
+f50(data, cx, cy, cz, cxname, cyname, vctitle) +
+  xlim(min(data$alcohol), 
+       quantile(data$alcohol, 0.95)) +
+  ylim(min(data$density), 
+       quantile(data$density, 0.95))
+```
+
+
+The above is displaying the quantiles of 
+
+* alcohol and density of wine
+
+* showing the quality for each incident
+
+* for each of red and white wines
+
+In red wine, low alcohol content and high density of wine result in low
+quality. The higher alcohol content has higher quality, even at lower 
+density.
+
+In white wine, low alcohol content and almost any measure of density of wine
+result in low quality, whereas the higher the alcohol content, the lower the 
+wine density, and the higher the measure of quality.
+
+
+#### Multivariate Quantiles - a pair that is somewhat correlated: \
+residual.sugar vs density
+
+
+```{r, echo=FALSE}
+# Using the function with new variable values.
+cx = "residual.sugar"
+cxname = "Residual Sugar"
+cy = "density"
+cyname = "Density of the Wine"
+vctitle <- paste(ctitle, cxname, "by", cyname, sep = " ")
+f50(data, cx, cy, cz, cxname, cyname, vctitle) +
+  xlim(min(data$residual.sugar), 
+       quantile(data$residual.sugar, 0.95)) +
+  ylim(min(data$density), 
+       quantile(data$density, 0.95))
+```
+
+
+The above is displaying the quantiles of 
+
+* residual.sugar and density of the wine
+
+* showing the quality for each incident
+
+* for each of red and white wines
+
+The spread of the residual.sugar values in white wine is much greater than
+the spread in red wine.
+
+In red wine, most of the residual.sugar is below 5. As the density of the
+wine increases, the quality decreases.
+
+In white wine, there are many instances of all levels of residual.sugar.
+As the residual.sugar increases, the density increases. The higher the density
+of the wine
+at all levels of residual.sugar, the lower the quality.
+
+
+## Multivariate - regression line for each category to depict the separation. 
+
+
+This plot was recommended by the reviewer:
+
+
+```{r, echo=FALSE}
+ggplot(aes(x = alcohol, 
+           y = residual.sugar  , color = factor(quality)), 
+       data = data) +
+      geom_point(alpha = 0.8, size = 1) +
+      geom_smooth(method = "lm", se = FALSE,size=1)  +
+  scale_color_brewer(type='seq',
+                   guide=guide_legend(title='Quality'))
+
+```
+
+
+This plot was recommended by the reviewer to sow the separation
+by quality. There is a regression line for each measure of 
+quality.
+
+Very informative. At the lowest quality, as the alcohol content goes up,
+the sulphates go down more than at higher quality.
+
+
+## Multivariate - Table of Correlations by Wine Color
+
+The correlation matrix for the complete dataset is in the Bivariate section.
+
+
+### Multivatiate - correlations - red wine
+
+
+```{r, echo=FALSE}
+ggcorr(rw, geom = "blank", label = TRUE, label_size = 3,
+       label_round = 3, hjust = 0.75, layout.exp = 1) +
+  geom_point(size = 10, aes(color = coefficient > 0, 
+                            alpha = abs(coefficient) >= 0.5)) +
+  scale_alpha_manual(values = c("TRUE" = 0.25, "FALSE" = 0)) +
+  guides(color = FALSE, alpha = FALSE) 
+```
+
+Above is the correlation matrix for red Wine.
+
+
+### Multivatiate - correlations - white wine
+
+
+```{r, echo=FALSE}
+ggcorr(ww, geom = "blank", label = TRUE, label_size = 3,
+       label_round = 3, hjust = 0.75, layout.exp = 1) +
+  geom_point(size = 10, aes(color = coefficient > 0, 
+                            alpha = abs(coefficient) >= 0.5)) +
+  scale_alpha_manual(values = c("TRUE" = 0.25, "FALSE" = 0)) +
+  guides(color = FALSE, alpha = FALSE) 
+```
+
+
+Above is the correlation matrix for white Wine.
+
+
+### Multivatiate - correlations - comparison table
+
+In this section, I created a markdown table.
+
+In the table below, I have a column that is left justified, a column that 
+is centred and a column that is right justified by using the colon ":".
+
+I also learned that I do not have to use spaces to align the columns, 
+that the "|" will automatically align them for me.
+
+The correlation between the variables that the judges used to determine quality
+are somewhat different for red wine and white wine. These are the ones that 
+I used in my plots, showing strong, medium or weak.
+
+- strong: >= correlation of .5
+
+- medium: >=3 but <5
+
+- weak: <3
+
+In the case of comparison of a value with color, I had to use my own 
+judgement in looking at the graphs.
+
+
+|The two variables                            | OVERALL   | RED      |   WHITE|
+|---------------------------------------------|-----------|:--------:|-------:|
+|quality vs color                           |weak    |weak|weak  |
+|alcohol vs color                           |strong |strong|strong|
+|volatile.acidity vs color|strong |strong|strong| 
+|residual.sugar vs color                    |strong |strong|strong| 
+|free.sulfur.dioxide vs total.sulfur.dioxide|strong |strong|strong|
+|alcohol vs density                         |strong |med|strong|
+|residual.sugar vs density |strong |med|strong|
+|alcohol vs volatile.acidity |weak|weak|weak|
+|alcohol vs residual.sugar |med|weak|med|
+|quality vs alcohol|med|med|med|
+|quality vs fixed.acidity|weak|weak|weak|
+|quality vs volatile.acidity|weak|med|weak|
+|quality vs citric.acid|weak|weak|weak|
+|quality vs residual.sugar|weak|weak|weak|
+|quality vs chlorides |weak|weak|weak|
+|quality vs density|med|weak|med|
+|chlorides vs sulphates|med|med|weak|
+
+
+# Multivariate Analysis
+
+
+## Talk About Some of the Relationships you Observed in this Part of the \
+Investigation. Were There Features That Strengthened Each Other in Terms of \
+Looking at your Feature(s) of Interest?
+
+* quality and alcohol were positively correlated, along almost identical
+lines for both red and white wines (0.476 and 0.436 respectively)
+
+* the correlation between alcohol and volatile.acidity was not strong
+for either red or white wine, although red showed a slightly negative 
+correlation whereas white wine showed a slightly positivce correlation
+
+* the correlation between alcohol and residual.sugar showed a strong contrast
+between red wine, which was only very slightly positively correlated (0.0421),
+to white wine
+which was more strongly negatively correlated (-0.451)
+
+* residual.sugar and density of the wine were positively correlated
+for both red and white wines
+
+
+## Were There any Interesting or Surprising Interactions Between Features?
+
+* alcohol and density of the wine were negatively correlated. As the
+density went down, the alcohol content went up for both red and white
+wines, but more so for white wines
+
+* there was a positive correlation between residual.sugar and the density
+of the wine. As the residual.sugar content went up, the density of the wine
+went up. This is not that surprising, since a liquid becomes more dense 
+as the sugar content increases
+
+* residual.sugar and alcohol content were correlated for white wine (-0.451),
+but only weakly correlated for red wine (0.0421)
+
+* for red wine, as the citric.acid goes up, the quality also goes up, 
+there is a correlation of 0.226. On the other hand, for white wine, 
+the correlation line is almost flat (0.0092), indicating almost 
+no correlation 
+at all between 
+citric.acid and quality
+
+I learned a lot about the variables that go into rating wine. As I 
+considered the properties of the features and the results of the analysis, 
+there was nothing that really stood out.
+What surprised me the most was the overall low correlation between the 
+variables.
+
+
+# Final Plots and Summary
+
+
+## Plot One
+
+
+```{r, echo = FALSE}
+# My favorite univariate plot
+qplot(alcohol, data = data, bins = 30,
+      ylab = "Number of Instances", 
+      xlab = "Alcohol %", 
+      main = "Alcohol content") +
+  scale_x_continuous(breaks = seq(8,15,.5), lim = c(8, 15))
+
+```
+
+
+## Description One
+
+I chose this graph because alcohol plays a significant role in the overall
+higher quality of wine. 
+
+The histogram shows that there were many instances of alcohol content 
+at 9.5% and lower;
+but the long tail to the right indicates that there are many more 
+instances at higher alcohol percentages, even up to 14% +. 
+These higher percentages pull the mean up to 10.49% to the right 
+of the peak of the distribution. 
+
+The second and third quartiles range from 9.5 to 11.3, which is tighly 
+grouped around the mean. This grouping may account for the low ratio of
+Max to Mean alcohol percentages.
+
+
+## Plot Two
+
+
+```{r echo=FALSE, Plot_Two}
+# My favorite bivariate plot
+qplot(volatile.acidity, data = data, color = color, 
+      geom = "density",
+      ylab = "Density (proportion)", 
+      xlab = "Volatile Acidity (grams/liter)", 
+      main = "Volatile Acidity Density (Proportion) by Color")
+```
+
+
+## Description Two
+
+I chose volatile.acidity for my bivariate plot 
+because it was one of my features of interest.
+
+The plot shows the differences in red wine and white wine volatile.acidity.
+
+Putting both wines on the same layout helps to compare.
+
+Layout - geom "density" - smooths out the curves and shows
+them as proportions.
+
+Geom Density is a powerful graph to compare two data sets that have different
+number of instances (rows). In my dataset, white wine has 3x as many 
+instances as white wine.
+
+x represents the coordinates of the points where the density is estimated.
+y represents the estimated density values. These will be non-negative, but 
+can be zero. In these graphs, density is not frequency, it is a measure of 
+the proportion of
+the number of instances; and therefore standardizes the measurements
+between the two colors so that they can be compared, regardless of the 
+number of instances for each color.
+
+The density graph displays the proportion of red wine and white wine at each 
+marker of volatile.acidity. 
+
+The graph overlays the white and red wine volatile.acidity onto the 
+same graph which makes it clear that red wine has more 
+incidents of
+higher volatile.acidity.
+
+
+
+## Plot Three
+
+
+```{r echo=FALSE, Plot_Three}
+# My favorite multivariate plot
+ggplot(data = data, aes(x=residual.sugar, y=density, 
+                           color=as.factor(quality))) +
+  facet_wrap(~color) +
+  geom_point(alpha = 1/4, size = 3) +
+  scale_color_identity(guide = 'legend') +
+  labs(color="Quality") + 
+  ggtitle("Quantile Comparison by Wine Color and Quality - 
+Residual Sugar by Density") +
+  xlab("Residual Sugar (grams/liter)") +
+  ylab("Density of the Wine (grams/ml)") +
+  xlim(min(data$residual.sugar), 
+       quantile(data$residual.sugar, 0.95)) +
+  ylim(min(data$density), 
+       quantile(data$density, 0.95)) + 
+  scale_color_brewer(type='seq')
+```
+
+
+## Description Three
+
+For my multivariate plot, I chose residual.sugar because it is one of my 
+features
+of interest. In this graph it is combined with
+two other features of interest: color and quality,
+as well as density which is another feature of the 
+dataset. Note that the "density" in these graphs is a variable in the
+dataset, not a geom graph type. 
+
+The graph is displaying the quantiles of 
+
+* residual.sugar and density of the wine
+
+* showing the quality for each incident
+
+* for each of red and white wines
+
+Quantile-quantile plots allow us to compare the
+quantiles of two sets of numbers. This is important
+since there are 3x as many white wine instances as
+there are red wine instances in my dataset.
+
+Quantile-quantile comparison is much more detailed than a
+simple comparison of means or medians.
+
+By producing quantile plots on the same scale we are able to
+make direct comparisons of:
+
+- medians
+
+- quartiles
+
+- inter-quartile ranges
+
+The spread of the residual.sugar values in white wine is much greater than
+the spread in red wine.
+
+In red wine, most of the residual.sugar is below 5. As the density of the
+wine increases, the quality decreases.
+
+In white wine, there are many instances at all levels of residual.sugar.
+As the residual.sugar increases, the density increases. The higher the density
+of the wine
+at all levels of residual.sugar, the lower the quality.
+
+  
+# Reflection
+  
+I chose the red wine and white wine datasets because I have always been 
+curious on what measurements somaliers use in determining what makes
+a good quality wine. I chose to combine both red and white wine datasets
+into one dataset to make the analysis more interesting.
+
+I went through many struggles, most of which I solved myself through 
+research as evidenced by the lenghty reference document that I am
+including, but when I got stumped, the forum mentors came to my
+rescue. They are a great bunch of people.
+
+## My Struggles Included:
+
+* I took the R statistics course that was recommended before I started
+the Udacity R course. The R statistics course focused on plotting complex 
+statistics
+on R graphs. Then when I took the Udacity R module, I was surprised to see
+that it focused on learning to draw graphs using datasets, and not on 
+graphing statistics. 
+The R statistics course was not a total waste of time, because 
+I learned a lot, but it delayed
+me finishing this module of the data analytics nanodegree. 
+
+I also struggled with:
+
+* how to get started, how to find the "knit" icon
+    + having problem with rmd file knit to html
+
+
+* figuring out how to mark the 80 character warning line
+
+* authoring code chunks
+
+* figuring out that to end a prompt in r, I have to use the esc key
+
+* understanding what the knitr package does
+
+* getting quality to show the binwidths by value: use as.factor(quality)
+    + then first reviewer told me to use bar graphs instead
+
+
+* when and how to use log10. Sometimes it helps a lot, and other times, it does
+not make much difference
+
+* how to choose the bin sizes, the xlim and ylim by looking 
+at the mean, median, min and max of the feature
+    + how to remove outliers in boxplot
+    + labelling logarithmic scale display
+    + displaying minor logarithmic ticks in x axis
+    + how to change legend title in ggplot 
+    + how to set proper binwidth using log10 scale
+    + removing outliers with coord cartesian or scale y continuous
+    + using the ggplot2 legend to change the position and the appearance of 
+    a graph legend
+
+
+* how to find the right colors to match R's default colors
+    + how to change the outline and fill colors of a histogram with qplot
+    + how to use colors_picker
+
+
+* when to use qplot vs ggplot. Understanding that ggplot is more
+powerful, especially when used inside a function
+    + aes linetype size shape
+
+
+* finding the ggpairs function: knowing what I want, but not remembering
+the function name
+
+* how to get the second level of markdown bullets to
+display properly by putting 4 spaces in front of them
+
+* I was confused by the geom(density) graph versus graphs of the density
+feature in my data set. The mentor in the forum helped me figure that out
+    + ploting density histograms with ggplot
+    + the difference between geom density in ggplot2 and density in base r
+    + use of density vs stat density
+    + what is the difference between density and density sum density
+
+
+* setting the default value in a function
+
+* understanding ggplot2 to mix multiple graphs on the same page
+    + refresher on qplot facet to show two histograms
+    + how to combine 2 ggplots into one plot
+    + adding a normal curve in histogram
+
+
+* refresher on smoothing and linear modelling
+    + how can i add regression lines to a plot that has multiple data series
+
+
+* adjusting the limits of x and y axis when adding new curves to a plot in r
+
+* how to use themes
+
+* how to concatebate two strings
+
+* formatting decimal places in r
+
+* creating markdown tables
+    + getting the tables to line up properly
+    + left justify, centre and right justify the columns in the table
+
+
+* unnecessary warnings messages - will they harm my final submission
+
+
+## My Successes Included:
+
+
+### What I learned about wine:
+
+* I learned what features make up wine. I never would 
+have guessed that sulfur.dioxide and chlorides were
+in wine.
+
+* I learned that the features used to measure the 
+quality of wine are not very highly correlated 
+(generally speaking).
+
+* sommeliers generally like wine that has  higher
+alcohol content. Don't we all?
+
+* red wine has more volatile.acidity than white wine.
+
+* white wine has more residual.sugar than
+red wine. 
+
+* I learned that white wine has similar distribution of measures of quality
+as red wine. This is interesting. 
+It breaks my mold of
+thinking that red wines almost always have higher quality than white wines.
+
+
+
+### What I learned about R:
+
+* R is very powerful to make graphs, but python is more powerful
+to program
+
+* it's fun to play around with colors and options as I did in
+my boxplots
+
+* sometimes it's not easy to get the ticks to be spaced 
+properly on the x axis
+
+* it takes a lot of time to make graphs look pretty
+
+
+### Project work successes:
+
+* I included a lot of graphs. I learned to refine graphs by
+varying the binwidths, using axes labels, using sqrt and
+using log10
+
+* I included programming to avoid repetitive code when creating
+similar graphs for a variety of variables
+
+    + The reviewer recommended that I add a jitter plot and markers 
+    to my boxplots to show the mean values because it makes the plot a lot 
+    more informative. The beauty is that I only had to add the jitter plot 
+    and the mean markers to my function, and all of the subsequent plots 
+    include them.
+
+* I learned new markdown techniques for bullets and tables
+
+
+## Insight Into Future Work:
+
+* I used programs to save code to repeat in
+multiple graphs. I could go even further with the programming by
+using a list, matrix or dataframe of the values in the variables that are
+used by the code, and then looping through the list, matrix or dataframe.
+For example: the values for these items changed between the graphs:
+title, x axis label, y axis label, xlim,
+ylim and so on
+
+* I learned how to use tables in the multivariate section.
+It would have been cleaner to use tables in some of 
+the other sections as well. For example, when listing
+the 3 pairs of features that had the highest 
+correlations. That could be a future improvement
+
+Teresa Aysan
+
